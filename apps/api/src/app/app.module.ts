@@ -1,4 +1,6 @@
+import { AccountController } from '@api/account/account.controller';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
+import { PostController } from '@api/post/post.controller';
 import { LoggerPlugin } from '@bltx/core';
 import { cors } from '@elysiajs/cors';
 import { DrizzleQueryError } from 'drizzle-orm/errors';
@@ -20,4 +22,6 @@ export const App = new Elysia()
 
   .use(cors())
   .use(EnvironmentPlugin)
-  .use(LoggerPlugin);
+  .use(LoggerPlugin)
+  .use(AccountController)
+  .use(PostController);

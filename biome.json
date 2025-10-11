@@ -95,6 +95,24 @@
           }
         }
       }
+    },
+    {
+      "includes": ["**/apps/api/**/*.db.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@api/lib": "Do not import this from within apps/api",
+                  "@api/db/db.schema": "Do not import this from within *.db.ts files"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }
