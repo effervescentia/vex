@@ -5,7 +5,7 @@
       "name": "app",
       "devDependencies": {
         "@biomejs/biome": "2.0.5",
-        "@bltx/plop": "1.3.2",
+        "@bltx/plop": "1.4.1",
         "@tsconfig/bun": "1.0.7",
         "@types/bun": "1.1.14",
         "plop": "4.0.1",
@@ -29,7 +29,7 @@
         "parse-duration": "2.1.4",
       },
       "devDependencies": {
-        "@bltx/test": "1.0.1",
+        "@bltx/test": "1.1.0",
         "drizzle-kit": "0.31.4",
         "drizzle-lab": "0.11.0",
         "rimraf": "6.0.1",
@@ -140,9 +140,9 @@
 
     "@bltx/db": ["@bltx/db@1.3.2", "", { "dependencies": { "ts-pattern": "5.7.1", "type-fest": "4.41.0" }, "peerDependencies": { "@bltx/core": "1.1.0", "@electric-sql/pglite": "^0.3", "drizzle-kit": "^0.31", "drizzle-orm": "^0.44", "elysia": "^1" }, "optionalPeers": ["drizzle-kit"] }, "sha512-q/B7KbRLSVtRJuocUSShgUyo2r6jLkMfnEYEfiUlVXPhG8LL7Nu/9TItTUx7CBFgIt0yKqa4zYb5axAt9+K+cA=="],
 
-    "@bltx/plop": ["@bltx/plop@1.3.2", "", { "dependencies": { "change-case": "5.4.4", "fast-glob": "3.3.3", "ts-pattern": "5.8.0" }, "peerDependencies": { "plop": "^4" } }, "sha512-UkJaXyNDMF/61UNeluf1ZVOP+0JjZEVo5fQjhPDdrvnTfI+zAaMa4om9Md3PhAuY1mItU2SIsevwL8mlk/WJQA=="],
+    "@bltx/plop": ["@bltx/plop@1.4.1", "", { "dependencies": { "change-case": "5.4.4", "fast-glob": "3.3.3", "ts-pattern": "5.8.0" }, "peerDependencies": { "plop": "^4" } }, "sha512-BWnIuzJYoWDCa3AR8BpQqkIqI7FrHutrjVqMJI6kxsJjPrxVLK+KD8jR4tuGCsNxrPgo90SRHg20JhDz6EuoRw=="],
 
-    "@bltx/test": ["@bltx/test@1.0.1", "", { "peerDependencies": { "@bltx/db": "1.3.0", "elysia": "^1" } }, "sha512-MF2LHetfRr7KFphjGE/kPmq+iu1fSM8nb3v+/sH8I6DyycWvtPnrHGad2syajdAWnm/NBI02otxaez++9pwuow=="],
+    "@bltx/test": ["@bltx/test@1.1.0", "", { "peerDependencies": { "@bltx/db": "1.3.2", "elysia": "^1" } }, "sha512-NAtG20Pk+Q48nW0ysCB5fNWtTfC8pWrwmqtjxrTbEunYzlo3AXeEGQbk4sBrlT4zFuFxoNizOInUlhB3Ipha+w=="],
 
     "@bltx/web": ["@bltx/web@1.0.3", "", { "peerDependencies": { "@elysiajs/eden": "^1", "@vanilla-extract/css": "^1", "jotai": "^2", "rainbow-sprinkles": "^1", "react": "^19" } }, "sha512-3j0hc7tg5DtA8TlSkh+8ZtI+f4is8hamwb8HAYncXbIL77woCGNsBTRR0gNpRLjupkK2QEDtIIqgXKdavJcmuQ=="],
 
@@ -1078,8 +1078,6 @@
 
     "@bltx/plop/ts-pattern": ["ts-pattern@5.8.0", "", {}, "sha512-kIjN2qmWiHnhgr5DAkAafF9fwb0T5OhMVSWrm8XEdTFnX6+wfXwYOFjeF86UZ54vduqiR7BfqScFmXSzSaH8oA=="],
 
-    "@bltx/test/@bltx/db": ["@bltx/db@1.3.0", "", { "dependencies": { "ts-pattern": "5.7.1", "type-fest": "4.41.0" }, "peerDependencies": { "@bltx/core": "1.1.0", "@electric-sql/pglite": "^0.3", "drizzle-kit": "^0.31", "drizzle-orm": "^0.44", "elysia": "^1" }, "optionalPeers": ["drizzle-kit"] }, "sha512-1irPpkxhfQxAiNe2jlK21LJZL0s7fa6AwcR/KGuzuBdczlIX15vvDvSP5o8Irl7U9FYHKfLNPViBQnXV5MknEA=="],
-
     "@esbuild-kit/core-utils/esbuild": ["esbuild@0.18.20", "", { "optionalDependencies": { "@esbuild/android-arm": "0.18.20", "@esbuild/android-arm64": "0.18.20", "@esbuild/android-x64": "0.18.20", "@esbuild/darwin-arm64": "0.18.20", "@esbuild/darwin-x64": "0.18.20", "@esbuild/freebsd-arm64": "0.18.20", "@esbuild/freebsd-x64": "0.18.20", "@esbuild/linux-arm": "0.18.20", "@esbuild/linux-arm64": "0.18.20", "@esbuild/linux-ia32": "0.18.20", "@esbuild/linux-loong64": "0.18.20", "@esbuild/linux-mips64el": "0.18.20", "@esbuild/linux-ppc64": "0.18.20", "@esbuild/linux-riscv64": "0.18.20", "@esbuild/linux-s390x": "0.18.20", "@esbuild/linux-x64": "0.18.20", "@esbuild/netbsd-x64": "0.18.20", "@esbuild/openbsd-x64": "0.18.20", "@esbuild/sunos-x64": "0.18.20", "@esbuild/win32-arm64": "0.18.20", "@esbuild/win32-ia32": "0.18.20", "@esbuild/win32-x64": "0.18.20" }, "bin": { "esbuild": "bin/esbuild" } }, "sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA=="],
 
     "@isaacs/cliui/string-width": ["string-width@5.1.2", "", { "dependencies": { "eastasianwidth": "^0.2.0", "emoji-regex": "^9.2.2", "strip-ansi": "^7.0.1" } }, "sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA=="],
@@ -1165,8 +1163,6 @@
     "@babel/helper-module-imports/@babel/traverse/@babel/parser": ["@babel/parser@7.27.1", "", { "dependencies": { "@babel/types": "^7.27.1" }, "bin": "./bin/babel-parser.js" }, "sha512-I0dZ3ZpCrJ1c04OqlNsQcKiZlsrXf/kkE4FXzID9rIOYICsAbA8mMDzhW/luRNAHdCNt7os/u8wenklZDlUVUQ=="],
 
     "@babel/helper-module-imports/@babel/traverse/@babel/template": ["@babel/template@7.27.1", "", { "dependencies": { "@babel/code-frame": "^7.27.1", "@babel/parser": "^7.27.1", "@babel/types": "^7.27.1" } }, "sha512-Fyo3ghWMqkHHpHQCoBs2VnYjR4iWFFjguTDEqA5WgZDOrFesVjMhMM2FSqTKSoUSDO1VQtavj8NFpdRBEvJTtg=="],
-
-    "@bltx/test/@bltx/db/ts-pattern": ["ts-pattern@5.7.1", "", {}, "sha512-EGs8PguQqAAUIcQfK4E9xdXxB6s2GK4sJfT/vcc9V1ELIvC4LH/zXu2t/5fajtv6oiRCxdv7BgtVK3vWgROxag=="],
 
     "@esbuild-kit/core-utils/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.18.20", "", { "os": "android", "cpu": "arm" }, "sha512-fyi7TDI/ijKKNZTUJAQqiG5T7YjJXgnzkURqmGj13C6dCqckZBLdl4h7bkhHt/t0WP+zO9/zwroDvANaOqO5Sw=="],
 

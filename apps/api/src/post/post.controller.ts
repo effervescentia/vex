@@ -2,7 +2,6 @@ import { DatabasePlugin } from '@api/db/db.plugin';
 import Elysia, { t } from 'elysia';
 import { CreateTextPostRequest } from './data/create-text-post.req';
 import { PatchTextPostRequest } from './data/patch-text-post.req';
-import { PostDTO } from './data/post.dto';
 import { PostWithContentDTO } from './data/post-with-content.dto';
 import { PostService } from './post.service';
 
@@ -19,7 +18,7 @@ export const PostController = new Elysia({ prefix: '/post' })
     },
     {
       body: CreateTextPostRequest,
-      response: PostDTO,
+      response: PostWithContentDTO,
     },
   )
 
@@ -31,7 +30,7 @@ export const PostController = new Elysia({ prefix: '/post' })
     {
       params: PostParams,
       body: PatchTextPostRequest,
-      response: PostDTO,
+      response: PostWithContentDTO,
     },
   )
 
