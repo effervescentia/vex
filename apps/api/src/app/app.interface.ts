@@ -1,3 +1,4 @@
+export type { AccountDetails } from '@api/account/data/account-details.dto';
 export type { PostWithContent } from '@api/post/data/post-with-content.dto';
 export type { PostBoost } from '@api/post/data/post-boost.dto';
 export type { AccountAlias } from '@api/account/data/account-alias.dto';

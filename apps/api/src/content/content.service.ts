@@ -9,7 +9,7 @@ export class ContentService extends DataService {
     return insertOne(this.db, TextContentDB, data);
   }
 
-  async patchText(postID: string, patch: PatchTextPost) {
-    await updateOne(this.db, TextContentDB, eq(TextContentDB.postID, postID), patch);
+  async patchText(postID: string, data: PatchTextPost) {
+    await updateOne(this.db, TextContentDB, eq(TextContentDB.postID, postID), data);
   }
 }

@@ -5,6 +5,12 @@
     "paths": {
       "@web/*": ["./src/*"],
       "@api/*": ["../api/src/*"]
-    }
+    },
+
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true
   }
 }

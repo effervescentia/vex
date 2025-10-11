@@ -1,17 +1,23 @@
 import { DatabasePlugin } from '@api/db/db.plugin';
-import { eq } from 'drizzle-orm';
+import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import Elysia, { t } from 'elysia';
 import { AccountService } from './account.service';
-import { AccountDB } from './data/account.db';
+import { AccountAliasService } from './account-alias.service';
 import { AccountDTO } from './data/account.dto';
+import { AccountDetailsDTO } from './data/account-details.dto';
 import { CreateAccountRequest } from './data/create-account.req';
 import { PatchAccountRequest } from './data/patch-account.req';
+import { UpdateAccountAliasRequest } from './data/update-account-alias.req';
 
 const AccountParams = t.Object({ accountID: t.String({ format: 'uuid' }) });
 
 export const AccountController = new Elysia({ prefix: '/account' })
   .use(DatabasePlugin)
-  .derive({ as: 'scoped' }, ({ db }) => ({ service: new AccountService(db()) }))
+  .use(EnvironmentPlugin)
+  .derive({ as: 'scoped' }, ({ db, env }) => ({
+    service: new AccountService(db(), env),
+    aliasService: new AccountAliasService(db(), env),
+  }))
 
   .get(
     '/',
@@ -36,8 +42,8 @@ export const AccountController = new Elysia({ prefix: '/account' })
 
   .get(
     '/:accountID',
-    async ({ db, params, status }) => {
-      const account = await db().query.AccountDB.findFirst({ where: eq(AccountDB.id, params.accountID) });
+    async ({ service, params, status }) => {
+      const account = await service.getDetails(params.accountID);
       if (!account) return status(404, `No Account exists with ID '${params.accountID}'`);
 
       return account;
@@ -45,7 +51,7 @@ export const AccountController = new Elysia({ prefix: '/account' })
     {
       params: AccountParams,
       response: {
-        200: AccountDTO,
+        200: AccountDetailsDTO,
         404: t.String(),
       },
     },
@@ -60,6 +66,17 @@ export const AccountController = new Elysia({ prefix: '/account' })
       params: AccountParams,
       body: PatchAccountRequest,
       response: AccountDTO,
+    },
+  )
+
+  .put(
+    '/:accountID/alias',
+    async ({ aliasService, params, body }) => {
+      await aliasService.update(params.accountID, body);
+    },
+    {
+      params: AccountParams,
+      body: UpdateAccountAliasRequest,
     },
   )
 

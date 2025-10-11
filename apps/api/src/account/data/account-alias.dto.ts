@@ -7,6 +7,7 @@ export const AccountAliasDTO = t.Object({
   accountID: t.String({ format: 'uuid' }),
   name: t.String(),
   isActive: t.Boolean(),
+  expiredAt: t.Nullable(t.Date()),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });

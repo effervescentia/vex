@@ -3,6 +3,4 @@ import { AccountDTO } from './account.dto';
 
 export type PatchAccount = Static<typeof PatchAccountRequest>;
 
-export const PatchAccountRequest = t.Partial(t.Pick(AccountDTO, [
-  // TODO: implement me
-]));
+export const PatchAccountRequest = t.Partial(t.Pick(AccountDTO, ['description']));

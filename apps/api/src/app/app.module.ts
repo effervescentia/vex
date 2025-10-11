@@ -18,6 +18,7 @@ export const App = new Elysia()
     }
 
     console.log(err);
+    return undefined;
   })
 
   .use(cors())
