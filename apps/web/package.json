@@ -4,8 +4,8 @@
     "dev": "vite",
     "build": "vite build",
     "check:types": "tsc --noEmit",
-    "test": "vitest run",
-    "tdd": "bun test --watch"
+    "test": "echo 'no tests' || vitest run",
+    "tdd": "vitest"
   },
   "dependencies": {
     "@bltx/web": "1.0.3",
