@@ -1,11 +1,9 @@
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
-import { desc, eq } from 'drizzle-orm';
 import Elysia, { t } from 'elysia';
 import { AccountService } from './account.service';
 import { AccountAliasService } from './account-alias.service';
 import { AccountDTO } from './data/account.dto';
-import { AccountAliasDB } from './data/account-alias.db';
 import { AccountAliasDTO } from './data/account-alias.dto';
 import { AccountDetailsDTO } from './data/account-details.dto';
 import { CreateAccountRequest } from './data/create-account.req';
