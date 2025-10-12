@@ -113,6 +113,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["**/*.test.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": { "level": "off" }
+          }
+        }
+      }
     }
   ]
 }

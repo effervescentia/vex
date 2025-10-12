@@ -1,9 +1,12 @@
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
+import { desc, eq } from 'drizzle-orm';
 import Elysia, { t } from 'elysia';
 import { AccountService } from './account.service';
 import { AccountAliasService } from './account-alias.service';
 import { AccountDTO } from './data/account.dto';
+import { AccountAliasDB } from './data/account-alias.db';
+import { AccountAliasDTO } from './data/account-alias.dto';
 import { AccountDetailsDTO } from './data/account-details.dto';
 import { CreateAccountRequest } from './data/create-account.req';
 import { PatchAccountRequest } from './data/patch-account.req';
@@ -36,7 +39,7 @@ export const AccountController = new Elysia({ prefix: '/account' })
     },
     {
       body: CreateAccountRequest,
-      response: AccountDTO,
+      response: AccountDetailsDTO,
     },
   )
 
@@ -73,10 +76,13 @@ export const AccountController = new Elysia({ prefix: '/account' })
     '/:accountID/alias',
     async ({ aliasService, params, body }) => {
       await aliasService.update(params.accountID, body);
+
+      return aliasService.getAll(params.accountID);
     },
     {
       params: AccountParams,
       body: UpdateAccountAliasRequest,
+      response: t.Array(AccountAliasDTO),
     },
   )
 

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { AccountDB, PostDB, TextContentDB } from '@api/db/db.schema';
 import type { PostWithContent } from '@api/lib';
 import { insertOne } from '@bltx/db';
-import { MockRequest } from '@bltx/test';
+import { MockRequest, type Serialized, serialize } from '@bltx/test';
 import { setupIntegrationTest } from '@test/setup.util';
 import { eq } from 'drizzle-orm';
 import type { CreateTextPost } from './data/create-text-post.req';
@@ -15,7 +15,7 @@ describe('PostController', () => {
   describe('POST /post/text', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
-    const request = (body: CreateTextPost): Promise<PostWithContent> =>
+    const request = (body: CreateTextPost): Promise<Serialized<PostWithContent>> =>
       app()
         .handle(new MockRequest('/post/text', { method: 'post', json: body }))
         .then((res) => res.json());
@@ -36,24 +36,21 @@ describe('PostController', () => {
         }),
       );
 
-      expect(await db().query.PostDB.findFirst({ where: eq(PostDB.id, result.id) })).toEqual(
-        expect.objectContaining({
-          authorID: account.id,
-          geolocation: data.geolocation,
-          visibility: PostVisibility.PUBLIC,
-        }),
+      const { text: _, ...resultWithoutText } = result;
+      expect(serialize(await db().query.PostDB.findFirst({ where: eq(PostDB.id, result.id) }))).toEqual(
+        resultWithoutText,
       );
 
-      expect(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.postID, result.id) })).toEqual(
-        expect.objectContaining({ content: data.content }),
-      );
+      expect(
+        serialize(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.postID, result.id) })),
+      ).toEqual({ ...result.text!, postID: result.id });
     });
   });
 
   describe('PATCH /post/text/:postID', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
-    const request = (postID: string, body: PatchTextPost): Promise<PostWithContent> =>
+    const request = (postID: string, body: PatchTextPost): Promise<Serialized<PostWithContent>> =>
       app()
         .handle(new MockRequest(`/post/text/${postID}`, { method: 'patch', json: body }))
         .then((res) => res.json());
@@ -69,10 +66,20 @@ describe('PostController', () => {
 
       const result = await request(post.id, data);
 
-      expect(result).toEqual(expect.objectContaining({ text: expect.objectContaining({ content: data.content }) }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          text: {
+            ...serialize(post.text),
+            content: data.content,
+            updatedAt: expect.any(String),
+          },
+        }),
+      );
 
-      expect(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.postID, post.id) })).toEqual(
-        expect.objectContaining({ content: data.content }),
+      expect(new Date(result.updatedAt)).toBeAfter(account.updatedAt);
+
+      expect(serialize(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.postID, post.id) }))).toEqual(
+        expect.objectContaining(result.text!),
       );
     });
   });
@@ -80,7 +87,7 @@ describe('PostController', () => {
   describe('GET /post/:postID', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
-    const request = (postID: string): Promise<unknown> =>
+    const request = (postID: string): Promise<Serialized<PostWithContent>> =>
       app()
         .handle(new MockRequest(`/post/${postID}`, { method: 'get' }))
         .then((res) => res.json());
@@ -96,12 +103,7 @@ describe('PostController', () => {
 
       const result = await request(post.id);
 
-      expect(result).toEqual({
-        ...post,
-        text: expect.objectContaining({ content }),
-        createdAt: post.createdAt.toJSON(),
-        updatedAt: post.createdAt.toJSON(),
-      });
+      expect(result).toEqual(serialize(post));
     });
   });
 

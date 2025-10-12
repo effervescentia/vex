@@ -5,7 +5,7 @@ import { DataService } from '@api/global/data.service';
 import { ForbiddenError } from '@api/global/forbidden.error';
 import { insertOne } from '@bltx/db';
 import { addSeconds } from 'date-fns';
-import { and, eq, gt } from 'drizzle-orm';
+import { and, desc, eq, gt } from 'drizzle-orm';
 import { humanId } from 'human-id';
 import { AccountAliasDB } from './data/account-alias.db';
 import type { AccountAlias } from './data/account-alias.dto';
@@ -43,6 +43,13 @@ export class AccountAliasService extends DataService {
 
   private async create(accountID: string, name: string) {
     return insertOne(this.db, AccountAliasDB, { name, accountID, isActive: true });
+  }
+
+  async getAll(accountID: string) {
+    return this.db.query.AccountAliasDB.findMany({
+      where: eq(AccountAliasDB.accountID, accountID),
+      orderBy: desc(AccountAliasDB.createdAt),
+    });
   }
 
   /**
