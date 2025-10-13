@@ -1,4 +1,5 @@
 import { AccountController } from '@api/account/account.controller';
+import { AuthController } from '@api/auth/auth.controller';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import { HealthController } from '@api/global/health.controller';
 import { PostController } from '@api/post/post.controller';
@@ -15,4 +16,5 @@ export const App = new Elysia()
   .use(HealthController)
 
   .use(AccountController)
-  .use(PostController);
+  .use(PostController)
+  .use(AuthController);
