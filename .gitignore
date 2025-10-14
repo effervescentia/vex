@@ -4,3 +4,5 @@ build
 .turbo
 
 *.report.xml
+
+**/k8s/charts

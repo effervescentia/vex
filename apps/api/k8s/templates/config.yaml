@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vex-api.fullname" . }}
+  labels:
+    {{- include "vex-api.labels" . | nindent 4 }}
+data:
+  PORT: '8080'
+  
+  POSTGRES_DATABASE: vex
+  POSTGRES_USERNAME: vex
+  
+  ACCOUNT_MAX_ALIASES: '3'
+  ACCOUNT_ALIAS_EXPIRY_SHORT: 1d
+  ACCOUNT_ALIAS_EXPIRY_LONG: 1mo

@@ -1,0 +1,35 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: vex
+build:
+  artifacts:
+    - image: api
+      docker:
+        dockerfile: apps/api/Dockerfile
+        cacheFrom:
+          - api
+    # - image: web
+    #   docker:
+    #     dockerfile: apps/web/Dockerfile
+    #     cacheFrom:
+    #       - web
+  local:
+    useDockerCLI: true
+# manifests:
+#   rawYaml:
+#     - apps/web/k8s/deployment.yaml
+deploy:
+  helm:
+    releases:
+      - name: api
+        chartPath: apps/api/k8s
+        useHelmSecrets: true
+        setValueTemplates:
+          image.repository: '{{.IMAGE_REPO_api}}'
+          image.tag: '{{.IMAGE_TAG_api}}@{{.IMAGE_DIGEST_api}}'
+# portForward:
+#   - resourceType: service
+#     resourceName: web
+#     port: 8080
+#     localPort: 9001
