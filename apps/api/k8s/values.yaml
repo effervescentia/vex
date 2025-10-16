@@ -12,10 +12,9 @@ podAnnotations: {}
 podLabels: {}
 
 service:
-  type: ClusterIP
+  # type: ClusterIP
   port: 8080
 
 postgres:
-  primary:
-    existingConfigmap: 'postgres-config'
-    existingSecret: 'postgres-secrets'
+  auth.existingSecret: 'postgres-secrets'
+  primary.existingConfigmap: 'postgres-config'
