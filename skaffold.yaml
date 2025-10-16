@@ -13,6 +13,11 @@ build:
           ENTRYPOINT_CMD: 'bun --cwd apps/api build/main.js'
         cacheFrom:
           - api
+      sync:
+        manual:
+          - src: 'apps/api/src/**'
+            strip: apps/api
+            dest: '.'
     - image: web
       docker:
         dockerfile: Dockerfile.prod
@@ -64,26 +69,29 @@ profiles:
       - command: dev
     patches:
       - op: replace
-        path: /build/artifacts
-        value:
-          - image: api
-            docker:
-              dockerfile: Dockerfile.dev
-              buildArgs:
-                WORKSPACE_TARGET: api
-            sync:
-              manual:
-                - src: 'apps/api/src/**'
-                  strip: apps/api
-                  dest: '.'
-          - image: web
-            docker:
-              dockerfile: Dockerfile.prod
-              buildArgs:
-                WORKSPACE_TARGET: web
-                ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
-              cacheFrom:
-                - web
+        path: /build/artifacts/0/docker/dockerfile
+        value: Dockerfile.dev
+      # - op: replace
+      #   path: /build/artifacts
+      #   value:
+      #     - image: api
+      #       docker:
+      #         dockerfile: Dockerfile.dev
+      #         buildArgs:
+      #           WORKSPACE_TARGET: api
+      #       sync:
+      #         manual:
+      #           - src: 'apps/api/src/**'
+      #             strip: apps/api
+      #             dest: '.'
+      #     - image: web
+      #       docker:
+      #         dockerfile: Dockerfile.prod
+      #         buildArgs:
+      #           WORKSPACE_TARGET: web
+      #           ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
+      #         cacheFrom:
+      #           - web
           # - image: web
           #   docker:
           #     dockerfile: Dockerfile.dev
