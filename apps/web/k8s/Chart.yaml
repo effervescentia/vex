@@ -1,0 +1,10 @@
+apiVersion: v2
+name: vex-web
+description: frontend of vex
+
+type: application
+
+# chart version
+version: '1.0.0'
+# application version
+appVersion: '1.0.0'

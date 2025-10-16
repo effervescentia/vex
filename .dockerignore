@@ -3,6 +3,7 @@
 !bun.lock
 !turbo.json
 !biome.json
+!*/*/scripts/**
 !*/*/package.json
 !*/*/tsconfig.json
 !*/*/bunfig.toml

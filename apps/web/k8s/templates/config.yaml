@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vex-web.fullname" . }}
+  labels:
+    {{- include "vex-web.labels" . | nindent 4 }}
+data:
+  PORT: '8080'
+  
+  VEX_API_HOST: 'http://localhost:8080'

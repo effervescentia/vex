@@ -6,19 +6,22 @@ build:
   artifacts:
     - image: api
       docker:
-        dockerfile: apps/api/Dockerfile
+        dockerfile: Dockerfile
+        buildArgs:
+          WORKSPACE_TARGET: api
+          ENTRYPOINT_CMD: 'bun --cwd apps/api build/main.js'
         cacheFrom:
           - api
-    # - image: web
-    #   docker:
-    #     dockerfile: apps/web/Dockerfile
-    #     cacheFrom:
-    #       - web
+    - image: web
+      docker:
+        dockerfile: Dockerfile
+        buildArgs:
+          WORKSPACE_TARGET: web
+          ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
+        cacheFrom:
+          - web
   local:
     useDockerCLI: true
-# manifests:
-#   rawYaml:
-#     - apps/web/k8s/deployment.yaml
 deploy:
   helm:
     releases:
@@ -28,8 +31,17 @@ deploy:
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_api}}'
           image.tag: '{{.IMAGE_TAG_api}}@{{.IMAGE_DIGEST_api}}'
-# portForward:
-#   - resourceType: service
-#     resourceName: web
-#     port: 8080
-#     localPort: 9001
+      - name: web
+        chartPath: apps/web/k8s
+        setValueTemplates:
+          image.repository: '{{.IMAGE_REPO_web}}'
+          image.tag: '{{.IMAGE_TAG_web}}@{{.IMAGE_DIGEST_web}}'
+portForward:
+  - resourceType: service
+    resourceName: api
+    port: 8080
+    localPort: 9000
+  - resourceType: service
+    resourceName: web
+    port: 8080
+    localPort: 9001
