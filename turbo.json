@@ -6,10 +6,6 @@
       "inputs": ["src/**"],
       "outputs": ["build/**"]
     },
-    "dev": {
-      "persistent": true,
-      "cache": false
-    },
     "check:types": {
       "inputs": ["src/**"]
     },

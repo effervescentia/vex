@@ -2,11 +2,12 @@ apiVersion: skaffold/v4beta13
 kind: Config
 metadata:
   name: vex
+
 build:
   artifacts:
     - image: api
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.prod
         buildArgs:
           WORKSPACE_TARGET: api
           ENTRYPOINT_CMD: 'bun --cwd apps/api build/main.js'
@@ -14,7 +15,7 @@ build:
           - api
     - image: web
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.prod
         buildArgs:
           WORKSPACE_TARGET: web
           ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
@@ -22,9 +23,21 @@ build:
           - web
   local:
     useDockerCLI: true
+
+manifests:
+  rawYaml:
+    - k8s/gateway.yaml
+
 deploy:
   helm:
     releases:
+      - name: gateway
+        repo: https://traefik.github.io/charts
+        remoteChart: traefik
+        namespace: traefik
+        createNamespace: true
+        setValues:
+          experimental.kubernetesGateway.enabled: true
       - name: api
         chartPath: apps/api/k8s
         useHelmSecrets: true
@@ -36,12 +49,53 @@ deploy:
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_web}}'
           image.tag: '{{.IMAGE_TAG_web}}@{{.IMAGE_DIGEST_web}}'
+
 portForward:
   - resourceType: service
-    resourceName: api
+    resourceName: api-vex-api
+    namespace: default
     port: 8080
     localPort: 9000
-  - resourceType: service
-    resourceName: web
-    port: 8080
-    localPort: 9001
+
+profiles:
+  - name: dev
+    requiresAllActivations: false
+    activation:
+      - command: dev
+    patches:
+      - op: replace
+        path: /build/artifacts
+        value:
+          - image: api
+            docker:
+              dockerfile: Dockerfile.dev
+              buildArgs:
+                WORKSPACE_TARGET: api
+            sync:
+              manual:
+                - src: 'apps/api/src/**'
+                  strip: apps/api
+                  dest: '.'
+          - image: web
+            docker:
+              dockerfile: Dockerfile.prod
+              buildArgs:
+                WORKSPACE_TARGET: web
+                ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
+              cacheFrom:
+                - web
+          # - image: web
+          #   docker:
+          #     dockerfile: Dockerfile.dev
+          #     buildArgs:
+          #       WORKSPACE_TARGET: web
+          #   dependencies:
+          #     paths:
+          #       - 'apps/web/index.html'
+          #       - '**/*.ts'
+          #       - '**/*.tsx'
+          #   sync:
+          #     manual:
+          #       - src: 'apps/web/src/**'
+          #         strip: apps/web
+          #         dest: '.'

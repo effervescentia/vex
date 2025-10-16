@@ -12,3 +12,4 @@
 !*/*/src/**
 !*/*/types/**
 **/*.test.ts
+node_modules/**
