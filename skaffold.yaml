@@ -10,8 +10,7 @@ build:
         dockerfile: Dockerfile.prod
         target: release-api
         buildArgs:
-          WORKSPACE_TARGET: api
-          ENTRYPOINT_CMD: bun --cwd apps/api build/main.js
+          APP: api
         cacheFrom:
           - api
       sync:
@@ -24,8 +23,7 @@ build:
         dockerfile: Dockerfile.prod
         target: release-web
         buildArgs:
-          WORKSPACE_TARGET: web
-          WEB_ENV_FILE: apps/web/build/env.js
+          APP: web
         cacheFrom:
           - web
       sync:
@@ -83,17 +81,17 @@ profiles:
     requiresAllActivations: false
     activation:
       - command: dev
-    patches:
-      - op: replace
-        path: /build/artifacts/0/docker/dockerfile
-        value: Dockerfile.dev
-      - op: remove
-        path: /build/artifacts/0/docker/target
-      - op: replace
-        path: /build/artifacts/1/docker/dockerfile
-        value: Dockerfile.dev
-      - op: remove
-        path: /build/artifacts/1/docker/target
-      - op: replace
-        path: /build/artifacts/1/docker/buildArgs/WEB_ENV_FILE
-        value: apps/web/public/env.js
+    # patches:
+    #   - op: replace
+    #     path: /build/artifacts/0/docker/dockerfile
+    #     value: Dockerfile.dev
+    #   - op: remove
+    #     path: /build/artifacts/0/docker/target
+      # - op: replace
+      #   path: /build/artifacts/1/docker/dockerfile
+      #   value: Dockerfile.dev
+      # - op: remove
+      #   path: /build/artifacts/1/docker/target
+      # - op: replace
+      #   path: /build/artifacts/1/docker/buildArgs/ENV_FILE
+      #   value: apps/web/public/env.js

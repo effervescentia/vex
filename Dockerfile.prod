@@ -15,9 +15,9 @@ COPY --parents */*/package.json /temp/prod/
 
 RUN bun install --cwd /temp/dev --frozen-lockfile
 
-ARG WORKSPACE_TARGET
+ARG APP
 
-RUN bun install --cwd /temp/prod --frozen-lockfile --filter "@vex/$WORKSPACE_TARGET" --production
+RUN bun install --cwd /temp/prod --frozen-lockfile --filter "@vex/$APP" --production
 
 
 FROM base AS build
@@ -25,20 +25,20 @@ FROM base AS build
 COPY --from=install /temp/dev ./
 COPY --parents turbo.json apps/* ./
 
-ARG WORKSPACE_TARGET
+ARG APP
 
-RUN bun run build --filter "@vex/$WORKSPACE_TARGET"
+RUN bun run build --filter "@vex/$APP"
 
 
 FROM base AS release-api
 
 COPY --from=install /temp/prod ./
 
-ARG WORKSPACE_TARGET
+ARG APP
 
-COPY --from=build "/home/bun/app/apps/$WORKSPACE_TARGET/build" "./apps/$WORKSPACE_TARGET/build/"
+COPY --from=build "/home/bun/app/apps/$APP/build" "./apps/$APP/build/"
 
-ARG ENTRYPOINT_CMD
+ARG ENTRYPOINT_CMD="bun --cwd apps/$APP build/main.js"
 ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
 USER bun
@@ -49,15 +49,18 @@ ENTRYPOINT [ "sh", "-c", "$ENTRYPOINT_CMD" ]
 FROM caddy:2.10-alpine AS release-web
 WORKDIR /usr/share/caddy
 
-ARG WORKSPACE_TARGET
+RUN mkdir /home/app
 
-COPY "apps/$WORKSPACE_TARGET/config/Caddyfile" /etc/caddy/Caddyfile
-COPY --from=build "/home/bun/app/apps/$WORKSPACE_TARGET/build" .
-COPY --chmod=0755 "apps/$WORKSPACE_TARGET/scripts/init.sh" /tmp/init.sh
+ARG APP
 
-ARG WEB_ENV_FILE
-ENV WEB_ENV_FILE=$WEB_ENV_FILE
+COPY --from=build "/home/bun/app/apps/$APP/build" .
+COPY "apps/$APP/config/*" "apps/$APP/scripts/*" /home/app/
 
-RUN /tmp/init.sh
+ARG ENV_FILE='env.js'
+ENV ENV_FILE=$ENV_FILE
 
-# ENTRYPOINT [ "sh", "-c", "$ENTRYPOINT_CMD" ]
+ARG ENTRYPOINT_CMD='caddy run --config /home/app/Caddyfile --adapter caddyfile'
+ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
+
+ENTRYPOINT [ "sh", "/home/app/init.sh" ]
+CMD []
