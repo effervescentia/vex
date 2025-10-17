@@ -17,15 +17,15 @@ WORKDIR "/home/bun/app/apps/$APP"
 FROM base AS dev-api
 
 EXPOSE 8080/tcp
-ENTRYPOINT [ "bun", "dev" ]
+ENTRYPOINT [ "bun", "--watch", "src/main.ts" ]
 
 
 FROM base AS dev-web
 
-ARG ENV_FILE
+ARG ENV_FILE="public/env.js"
 ENV ENV_FILE=$ENV_FILE
 
-ARG ENTRYPOINT_CMD='caddy run --config /etc/caddy/Caddyfile --adapter caddyfile'
+ARG ENTRYPOINT_CMD='node node_modules/.bin/vite'
 ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
 EXPOSE 8080/tcp

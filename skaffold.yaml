@@ -81,17 +81,16 @@ profiles:
     requiresAllActivations: false
     activation:
       - command: dev
-    # patches:
-    #   - op: replace
-    #     path: /build/artifacts/0/docker/dockerfile
-    #     value: Dockerfile.dev
-    #   - op: remove
-    #     path: /build/artifacts/0/docker/target
-      # - op: replace
-      #   path: /build/artifacts/1/docker/dockerfile
-      #   value: Dockerfile.dev
-      # - op: remove
-      #   path: /build/artifacts/1/docker/target
-      # - op: replace
-      #   path: /build/artifacts/1/docker/buildArgs/ENV_FILE
-      #   value: apps/web/public/env.js
+    patches:
+      - op: replace
+        path: /build/artifacts/0/docker/dockerfile
+        value: Dockerfile.dev
+      - op: replace
+        path: /build/artifacts/0/docker/target
+        value: dev-api
+      - op: replace
+        path: /build/artifacts/1/docker/dockerfile
+        value: Dockerfile.dev
+      - op: replace
+        path: /build/artifacts/1/docker/target
+        value: dev-web

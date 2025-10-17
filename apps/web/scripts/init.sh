@@ -22,4 +22,4 @@ do
   echo "window.vex_env.${env_var#VEX_} = '$env_val'," >> "$env_file"
 done
 
-eval "$cmd"
+eval "exec $cmd"
