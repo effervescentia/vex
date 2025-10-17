@@ -8,6 +8,7 @@ build:
     - image: api
       docker:
         dockerfile: Dockerfile.prod
+        target: release-api
         buildArgs:
           WORKSPACE_TARGET: api
           ENTRYPOINT_CMD: bun --cwd apps/api build/main.js
@@ -21,19 +22,20 @@ build:
     - image: web
       docker:
         dockerfile: Dockerfile.prod
+        target: release-web
         buildArgs:
           WORKSPACE_TARGET: web
-          ENTRYPOINT_CMD: bun --cwd apps/web/build index.html
+          WEB_ENV_FILE: apps/web/build/env.js
         cacheFrom:
           - web
       sync:
         manual:
-          - src: 'apps/api/**/*.ts'
-            strip: apps/api
-            dest: '../api'
           - src: 'apps/web/**/*.{ts,tsx,html}'
             strip: apps/web
             dest: '.'
+          - src: 'apps/api/**/*.ts'
+            strip: apps/api
+            dest: ../api
   local:
     useDockerCLI: true
 
@@ -54,6 +56,7 @@ deploy:
       - name: api
         chartPath: apps/api/k8s
         useHelmSecrets: true
+        skipBuildDependencies: true
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_api}}'
           image.tag: '{{.IMAGE_TAG_api}}@{{.IMAGE_DIGEST_api}}'
@@ -85,9 +88,12 @@ profiles:
         path: /build/artifacts/0/docker/dockerfile
         value: Dockerfile.dev
       - op: remove
-        path: /build/artifacts/0/docker/cacheFrom
+        path: /build/artifacts/0/docker/target
       - op: replace
         path: /build/artifacts/1/docker/dockerfile
         value: Dockerfile.dev
       - op: remove
-        path: /build/artifacts/1/docker/cacheFrom
+        path: /build/artifacts/1/docker/target
+      - op: replace
+        path: /build/artifacts/1/docker/buildArgs/WEB_ENV_FILE
+        value: apps/web/public/env.js

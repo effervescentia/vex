@@ -1,4 +1,0 @@
-**/*
-!src/**/*.ts
-src/**/*.test.ts
-!package.json

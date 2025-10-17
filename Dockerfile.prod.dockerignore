@@ -9,6 +9,8 @@
 !*/*/bunfig.toml
 !*/*/vite.config.mts
 !*/*/index.html
+!*/*/config/**
+!*/*/public/**
 !*/*/src/**
 !*/*/types/**
 **/*.test.ts
