@@ -19,24 +19,6 @@ RUN bun install --cwd /temp/dev --frozen-lockfile \
   && bun install --cwd /temp/prod --frozen-lockfile --filter "@vex/$WORKSPACE_TARGET" --production
 
 
-# FROM base AS dev
-
-# ARG WORKSPACE_TARGET
-# ENV WORKSPACE_TARGET=$WORKSPACE_TARGET
-
-# ARG ENTRYPOINT_CMD
-# ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
-
-# COPY --from=install /temp/dev ./
-# COPY --parents turbo.json apps/* ./
-
-# # RUN tar --help
-
-# # USER bun
-# EXPOSE 8080/tcp
-# ENTRYPOINT [ "sh", "-c", "$ENTRYPOINT_CMD" ]
-
-
 FROM base AS build
 
 ARG WORKSPACE_TARGET

@@ -10,12 +10,12 @@ build:
         dockerfile: Dockerfile.prod
         buildArgs:
           WORKSPACE_TARGET: api
-          ENTRYPOINT_CMD: 'bun --cwd apps/api build/main.js'
+          ENTRYPOINT_CMD: bun --cwd apps/api build/main.js
         cacheFrom:
           - api
       sync:
         manual:
-          - src: 'apps/api/src/**'
+          - src: 'apps/api/**/*.ts'
             strip: apps/api
             dest: '.'
     - image: web
@@ -23,9 +23,17 @@ build:
         dockerfile: Dockerfile.prod
         buildArgs:
           WORKSPACE_TARGET: web
-          ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
+          ENTRYPOINT_CMD: bun --cwd apps/web/build index.html
         cacheFrom:
           - web
+      sync:
+        manual:
+          - src: 'apps/api/**/*.ts'
+            strip: apps/api
+            dest: '../api'
+          - src: 'apps/web/**/*.{ts,tsx,html}'
+            strip: apps/web
+            dest: '.'
   local:
     useDockerCLI: true
 
@@ -61,6 +69,11 @@ portForward:
     namespace: default
     port: 8080
     localPort: 9000
+  - resourceType: service
+    resourceName: web-vex-web
+    namespace: default
+    port: 8080
+    localPort: 9001
 
 profiles:
   - name: dev
@@ -71,39 +84,10 @@ profiles:
       - op: replace
         path: /build/artifacts/0/docker/dockerfile
         value: Dockerfile.dev
-      # - op: replace
-      #   path: /build/artifacts
-      #   value:
-      #     - image: api
-      #       docker:
-      #         dockerfile: Dockerfile.dev
-      #         buildArgs:
-      #           WORKSPACE_TARGET: api
-      #       sync:
-      #         manual:
-      #           - src: 'apps/api/src/**'
-      #             strip: apps/api
-      #             dest: '.'
-      #     - image: web
-      #       docker:
-      #         dockerfile: Dockerfile.prod
-      #         buildArgs:
-      #           WORKSPACE_TARGET: web
-      #           ENTRYPOINT_CMD: 'bun --cwd apps/web/build index.html'
-      #         cacheFrom:
-      #           - web
-          # - image: web
-          #   docker:
-          #     dockerfile: Dockerfile.dev
-          #     buildArgs:
-          #       WORKSPACE_TARGET: web
-          #   dependencies:
-          #     paths:
-          #       - 'apps/web/index.html'
-          #       - '**/*.ts'
-          #       - '**/*.tsx'
-          #   sync:
-          #     manual:
-          #       - src: 'apps/web/src/**'
-          #         strip: apps/web
-          #         dest: '.'
+      - op: remove
+        path: /build/artifacts/0/docker/cacheFrom
+      - op: replace
+        path: /build/artifacts/1/docker/dockerfile
+        value: Dockerfile.dev
+      - op: remove
+        path: /build/artifacts/1/docker/cacheFrom

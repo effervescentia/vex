@@ -3,3 +3,4 @@
 k8s
 apps/*/.*
 apps/*/build
+**/*.test.ts
