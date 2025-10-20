@@ -37,10 +37,6 @@ build:
   local:
     useDockerCLI: true
 
-manifests:
-  rawYaml:
-    - k8s/gateway.yaml
-
 deploy:
   helm:
     releases:
@@ -50,7 +46,16 @@ deploy:
         namespace: traefik
         createNamespace: true
         setValues:
-          experimental.kubernetesGateway.enabled: true
+          providers:
+            kubernetesIngress:
+              enabled: false
+            kubernetesGateway:
+              enabled: true
+          gateway:
+            listeners:
+              web:
+                namespacePolicy:
+                  from: All
       - name: api
         chartPath: apps/api/k8s
         useHelmSecrets: true
@@ -58,23 +63,20 @@ deploy:
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_api}}'
           image.tag: '{{.IMAGE_TAG_api}}@{{.IMAGE_DIGEST_api}}'
+        dependsOn: ['gateway']
       - name: web
         chartPath: apps/web/k8s
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_web}}'
           image.tag: '{{.IMAGE_TAG_web}}@{{.IMAGE_DIGEST_web}}'
+        dependsOn: ['gateway']
 
 portForward:
   - resourceType: service
-    resourceName: api-vex-api
-    namespace: default
-    port: 8080
-    localPort: 9000
-  - resourceType: service
-    resourceName: web-vex-web
-    namespace: default
-    port: 8080
-    localPort: 9001
+    resourceName: gateway-traefik
+    namespace: traefik
+    port: 80
+    localPort: 1337
 
 profiles:
   - name: dev

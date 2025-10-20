@@ -18,3 +18,7 @@ service:
 postgres:
   auth.existingSecret: 'postgres-secrets'
   primary.existingConfigmap: 'postgres-config'
+
+gateway:
+  name: traefik-gateway
+  namespace: traefik
