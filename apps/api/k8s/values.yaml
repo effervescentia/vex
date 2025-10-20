@@ -1,12 +1,12 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: ''
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: ''
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 podAnnotations: {}
 podLabels: {}
@@ -14,10 +14,6 @@ podLabels: {}
 service:
   # type: ClusterIP
   port: 8080
-
-postgres:
-  auth.existingSecret: 'postgres-secrets'
-  primary.existingConfigmap: 'postgres-config'
 
 gateway:
   name: traefik-gateway

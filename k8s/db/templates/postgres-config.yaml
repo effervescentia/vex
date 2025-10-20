@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.db.postgres.configmapName }}
+  labels:
+    {{- include "vex-db.labels" . | nindent 4 }}
+data:
+  auth.database: {{ .Values.db.postgres.database }}
+  auth.username: {{ .Values.db.postgres.username }}
+  auth.enablePostgresUser: 'false'

@@ -3,7 +3,9 @@ kind: Config
 metadata:
   name: vex
 
-build:
+build:  
+  local:
+    useDockerCLI: true
   artifacts:
     - image: api
       docker:
@@ -34,8 +36,6 @@ build:
           - src: 'apps/api/**/*.ts'
             strip: apps/api
             dest: ../api
-  local:
-    useDockerCLI: true
 
 deploy:
   helm:
@@ -47,19 +47,16 @@ deploy:
         createNamespace: true
         setValues:
           providers:
-            kubernetesIngress:
-              enabled: false
-            kubernetesGateway:
-              enabled: true
-          gateway:
-            listeners:
-              web:
-                namespacePolicy:
-                  from: All
+            kubernetesIngress.enabled: false
+            kubernetesGateway.enabled: true
+          gateway.listeners.web.namespacePolicy.from: All
+      - name: db
+        chartPath: k8s/db
+        useHelmSecrets: true
+        # skipBuildDependencies: true
       - name: api
         chartPath: apps/api/k8s
         useHelmSecrets: true
-        skipBuildDependencies: true
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_api}}'
           image.tag: '{{.IMAGE_TAG_api}}@{{.IMAGE_DIGEST_api}}'
@@ -80,7 +77,6 @@ portForward:
 
 profiles:
   - name: dev
-    requiresAllActivations: false
     activation:
       - command: dev
     patches:

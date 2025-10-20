@@ -7,4 +7,4 @@ metadata:
 data:
   PORT: '8080'
   
-  VEX_API_HOST: 'http://localhost:8080'
+  VEX_API_HOST: 'http://api.vex.localhost:1337'

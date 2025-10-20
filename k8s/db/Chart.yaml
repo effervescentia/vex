@@ -1,0 +1,16 @@
+apiVersion: v2
+name: vex-db
+description: databases for vex
+
+type: application
+
+# chart version
+version: '1.0.0'
+# application version
+appVersion: '1.0.0'
+
+dependencies:
+  - name: postgresql
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: '18.0.14'
+    alias: postgres

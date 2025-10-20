@@ -6,3 +6,4 @@ build
 *.report.xml
 
 **/k8s/charts
+/k8s/*/charts
