@@ -15,12 +15,10 @@ const AccountParams = t.Object({ accountID: t.String({ format: 'uuid' }) });
 export const AccountController = new Elysia({ prefix: '/account' })
   .use(DatabasePlugin)
   .use(EnvironmentPlugin)
-  .derive({ as: 'scoped' }, ({ db, env }) => {
-    return {
-      service: new AccountService(db(), env()),
-      aliasService: new AccountAliasService(db(), env()),
-    };
-  })
+  .derive({ as: 'scoped' }, ({ db, env }) => ({
+    service: new AccountService(db(), env()),
+    aliasService: new AccountAliasService(db(), env()),
+  }))
 
   .get(
     '/',
