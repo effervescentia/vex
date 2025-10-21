@@ -3,13 +3,12 @@
 !bun.lock
 !turbo.json
 !biome.json
-!*/*/scripts/**
 !*/*/package.json
 !*/*/tsconfig.json
 !*/*/bunfig.toml
 !*/*/vite.config.mts
 !*/*/index.html
-!*/*/config/**
+!*/*/docker/**
 !*/*/public/**
 !*/*/src/**
 !*/*/types/**

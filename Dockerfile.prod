@@ -37,13 +37,14 @@ COPY --from=install /temp/prod ./
 ARG APP
 
 COPY --from=build "/home/bun/app/apps/$APP/build" "./apps/$APP/build/"
+COPY "apps/$APP/docker" "."
 
 ARG ENTRYPOINT_CMD="bun --cwd apps/$APP build/main.js"
 ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
 USER bun
 EXPOSE 8080/tcp
-ENTRYPOINT [ "sh", "-c", "$ENTRYPOINT_CMD" ]
+ENTRYPOINT [ "sh", "./init.sh" ]
 
 
 FROM caddy:2.10-alpine AS release-web
@@ -54,7 +55,7 @@ RUN mkdir /home/app
 ARG APP
 
 COPY --from=build "/home/bun/app/apps/$APP/build" .
-COPY "apps/$APP/config/*" "apps/$APP/scripts/*" /home/app/
+COPY "apps/$APP/docker/*" /home/app/
 
 ARG ENV_FILE='env.js'
 ENV ENV_FILE=$ENV_FILE
