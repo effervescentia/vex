@@ -21,3 +21,7 @@ gateway:
 
 tls:
   namespace: traefik
+
+postgres:
+  database: vex
+  username: vex

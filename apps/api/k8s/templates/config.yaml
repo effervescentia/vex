@@ -5,10 +5,10 @@ metadata:
   labels:
     {{- include "vex-api.labels" . | nindent 4 }}
 data:
-  PORT: '8080'
+  PORT: {{ .Values.service.port | quote }}
   
-  POSTGRES_DATABASE: vex
-  POSTGRES_USERNAME: vex
+  POSTGRES_DATABASE: {{ .Values.postgres.database }}
+  POSTGRES_USERNAME: {{ .Values.postgres.username }}
   
   ACCOUNT_MAX_ALIASES: '3'
   ACCOUNT_ALIAS_EXPIRY_SHORT: 1d

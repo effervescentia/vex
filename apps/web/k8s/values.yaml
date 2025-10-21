@@ -21,3 +21,6 @@ gateway:
 
 tls:
   namespace: traefik
+
+api:
+  host: 'https://api.vex.localhost:1337'

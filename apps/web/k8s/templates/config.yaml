@@ -5,6 +5,6 @@ metadata:
   labels:
     {{- include "vex-web.labels" . | nindent 4 }}
 data:
-  PORT: '8080'
+  PORT: {{ .Values.service.port | quote }}
   
-  VEX_API_HOST: 'http://api.vex.localhost:1337'
+  VEX_API_HOST: {{ .Values.api.host }}
