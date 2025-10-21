@@ -79,6 +79,14 @@ portForward:
     port: 443
     localPort: 1337
 
+test:
+  - image: api
+    structureTests:
+      - 'apps/api/test/structure.test.yaml'
+  - image: web
+    structureTests:
+      - 'apps/web/test/structure.test.yaml'
+
 profiles:
   - name: dev
     activation:
