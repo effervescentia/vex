@@ -3,6 +3,7 @@ kind: Secret
 type: kubernetes.io/tls
 metadata:
   name: "{{ include "vex-api.fullname" . }}-tls"
+  namespace: {{ .Values.tls.namespace }}
   labels:
     {{- include "vex-api.labels" . | nindent 4 }}
 data:

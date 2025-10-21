@@ -54,19 +54,6 @@ deploy:
             kubernetesIngress.enabled: false
             kubernetesGateway.enabled: true
           gateway.enabled: false
-          # gateway:
-          #   listeners:
-          #     web.namespacePolicy.from: All
-          #     websecure:
-          #       port: 8443
-          #       hostname: 'api.vex.localhost'
-          #       protocol: HTTPS
-          #       namespacePolicy.from: All
-          #       mode: Terminate
-          #       certificateRefs:
-          #         - name: api-vex-api-tls
-          #           kind: Secret
-          #           namespace: default
       - name: db
         chartPath: k8s/db
         useHelmSecrets: true
@@ -79,6 +66,7 @@ deploy:
         dependsOn: ['gateway']
       - name: web
         chartPath: apps/web/k8s
+        useHelmSecrets: true
         setValueTemplates:
           image.repository: '{{.IMAGE_REPO_web}}'
           image.tag: '{{.IMAGE_TAG_web}}@{{.IMAGE_DIGEST_web}}'
@@ -88,7 +76,7 @@ portForward:
   - resourceType: service
     resourceName: gateway-traefik
     namespace: traefik
-    port: 80
+    port: 443
     localPort: 1337
 
 profiles:

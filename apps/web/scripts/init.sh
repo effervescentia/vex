@@ -19,7 +19,7 @@ vex_env=$(env | grep '^VEX_' | cut -d= -f1)
 for env_var in $vex_env
 do
   env_val=$(eval echo "\$$env_var")
-  echo "window.vex_env.${env_var#VEX_} = '$env_val'," >> "$env_file"
+  echo "window.vexenv.${env_var#VEX_} = '$env_val';" >> "$env_file"
 done
 
 eval "exec $cmd"

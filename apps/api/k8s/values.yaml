@@ -12,9 +12,12 @@ podAnnotations: {}
 podLabels: {}
 
 service:
-  # type: ClusterIP
   port: 8080
 
 gateway:
   name: traefik-gateway
+  namespace: traefik
+  sectionName: api
+
+tls:
   namespace: traefik
