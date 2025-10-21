@@ -25,3 +25,10 @@ tls:
 postgres:
   database: vex
   username: vex
+
+account:
+  alias:
+    max: 3
+    expiry:
+      short: 1d
+      long: 1mo

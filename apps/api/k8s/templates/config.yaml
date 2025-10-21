@@ -10,6 +10,6 @@ data:
   POSTGRES_DATABASE: {{ .Values.postgres.database }}
   POSTGRES_USERNAME: {{ .Values.postgres.username }}
   
-  ACCOUNT_MAX_ALIASES: '3'
-  ACCOUNT_ALIAS_EXPIRY_SHORT: 1d
-  ACCOUNT_ALIAS_EXPIRY_LONG: 1mo
+  ACCOUNT_MAX_ALIASES: {{ .Values.account.alias.max | quote }}
+  ACCOUNT_ALIAS_EXPIRY_SHORT: {{ .Values.account.alias.expiry.short }}
+  ACCOUNT_ALIAS_EXPIRY_LONG: {{ .Values.account.alias.expiry.long }}
