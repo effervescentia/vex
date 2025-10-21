@@ -11,4 +11,5 @@ spec:
       protocol: TCP
       name: http
   selector:
+    app.kubernetes.io/component: server
     {{- include "vex-web.selectorLabels" . | nindent 4 }}

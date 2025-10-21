@@ -3,11 +3,13 @@ kind: Deployment
 metadata:
   name: {{ include "vex-web.fullname" . }}
   labels:
+    app.kubernetes.io/component: server
     {{- include "vex-web.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
+      app.kubernetes.io/component: server
       {{- include "vex-web.selectorLabels" . | nindent 6 }}
   template:
     metadata:
@@ -16,6 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        app.kubernetes.io/component: server
         {{- include "vex-web.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
