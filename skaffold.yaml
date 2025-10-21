@@ -37,6 +37,10 @@ build:
             strip: apps/api
             dest: ../api
 
+manifests:
+  rawYaml:
+    - k8s/gateway.yaml
+
 deploy:
   helm:
     releases:
@@ -49,11 +53,23 @@ deploy:
           providers:
             kubernetesIngress.enabled: false
             kubernetesGateway.enabled: true
-          gateway.listeners.web.namespacePolicy.from: All
+          gateway.enabled: false
+          # gateway:
+          #   listeners:
+          #     web.namespacePolicy.from: All
+          #     websecure:
+          #       port: 8443
+          #       hostname: 'api.vex.localhost'
+          #       protocol: HTTPS
+          #       namespacePolicy.from: All
+          #       mode: Terminate
+          #       certificateRefs:
+          #         - name: api-vex-api-tls
+          #           kind: Secret
+          #           namespace: default
       - name: db
         chartPath: k8s/db
         useHelmSecrets: true
-        # skipBuildDependencies: true
       - name: api
         chartPath: apps/api/k8s
         useHelmSecrets: true
@@ -92,3 +108,6 @@ profiles:
       - op: replace
         path: /build/artifacts/1/docker/target
         value: dev-web
+      - op: add
+        path: /deploy/helm/releases/1/skipBuildDependencies
+        value: true
