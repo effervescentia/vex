@@ -4,7 +4,6 @@ import { HealthController } from '@api/global/health.controller';
 import { PostController } from '@api/post/post.controller';
 import { LoggerPlugin } from '@bltx/core';
 import { cors } from '@elysiajs/cors';
-import { DrizzleQueryError } from 'drizzle-orm/errors';
 import Elysia from 'elysia';
 
 export type App = typeof App;
