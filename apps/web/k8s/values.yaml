@@ -19,6 +19,9 @@ gateway:
   namespace: traefik
   sectionName: web
 
+route:
+  hostname: app.vex.localhost
+
 tls:
   namespace: traefik
 

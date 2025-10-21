@@ -10,7 +10,7 @@ spec:
       namespace: {{ .Values.gateway.namespace }}
       sectionName: {{ .Values.gateway.sectionName }}
   hostnames:
-    - api.vex.localhost
+    - {{ .Values.route.hostname }}
   rules:
     - matches:
         - path:
