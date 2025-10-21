@@ -20,7 +20,7 @@ ARG ENTRYPOINT_CMD='bun --watch src/main.ts'
 ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
 EXPOSE 8080/tcp
-ENTRYPOINT [ "sh", "./docker/init.sh" ]
+ENTRYPOINT [ "sh", "./docker/entrypoint.sh" ]
 
 
 FROM base AS dev-web
@@ -32,4 +32,4 @@ ARG ENTRYPOINT_CMD='node node_modules/.bin/vite'
 ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
 EXPOSE 8080/tcp
-ENTRYPOINT [ "sh", "./docker/init.sh" ]
+ENTRYPOINT [ "sh", "./docker/entrypoint.sh" ]

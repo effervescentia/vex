@@ -44,7 +44,7 @@ ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
 USER bun
 EXPOSE 8080/tcp
-ENTRYPOINT [ "sh", "./init.sh" ]
+ENTRYPOINT [ "sh", "./entrypoint.sh" ]
 
 
 FROM caddy:2.10-alpine AS release-web
@@ -63,5 +63,5 @@ ENV ENV_FILE=$ENV_FILE
 ARG ENTRYPOINT_CMD='caddy run --config /home/app/Caddyfile --adapter caddyfile'
 ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
 
-ENTRYPOINT [ "sh", "/home/app/init.sh" ]
+ENTRYPOINT [ "sh", "/home/app/entrypoint.sh" ]
 CMD []
