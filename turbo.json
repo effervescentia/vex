@@ -11,6 +11,14 @@
     "test": {
       "inputs": ["src/**"],
       "cache": false
+    },
+    "test:unit": {
+      "inputs": ["src/**"],
+      "cache": false
+    },
+    "test:integration": {
+      "inputs": ["src/**"],
+      "cache": false
     }
   }
 }

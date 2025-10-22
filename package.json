@@ -12,7 +12,9 @@
     "dev": "skaffold dev --kube-context=minikube --auto-build=false",
     "format": "biome format --write --use-editorconfig true",
     "plop": "NODE_OPTIONS='--import tsx' plop --plopfile=plopfile.ts",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:integration": "turbo run test:integration"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.5",

@@ -11,6 +11,6 @@
 !*/*/docker/**
 !*/*/public/**
 !*/*/src/**
+!*/*/test/**
 !*/*/types/**
-**/*.test.ts
 node_modules/**

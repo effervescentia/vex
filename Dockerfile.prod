@@ -20,12 +20,23 @@ ARG APP
 RUN bun install --cwd /temp/prod --frozen-lockfile --filter "@vex/$APP" --production
 
 
+FROM base AS test
+
+ENV NODE_ENV='test'
+
+COPY --from=install /temp/dev ./
+COPY --parents turbo.json apps/* ./
+
+ARG APP
+
+RUN bun run test:unit --filter "@vex/$APP"
+
+
 FROM base AS build
 
 ENV NODE_ENV='production'
 
-COPY --from=install /temp/dev ./
-COPY --parents turbo.json apps/* ./
+COPY --from=test /home/bun/app ./
 
 ARG APP
 

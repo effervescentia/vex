@@ -9,7 +9,9 @@
     "db:clean": "rimraf data.db",
     "db:push": "bun ./scripts/db-push.ts",
     "test": "NODE_ENV=test bun test",
-    "tdd": "bun test --watch"
+    "test:unit": "glob '**/!(*.it).test.ts' | xargs -- bun run test",
+    "test:integration": "glob '**/*.it.test.ts' | xargs -- bun run test",
+    "tdd": "bun run test --watch"
   },
   "dependencies": {
     "@bltx/core": "1.5.0",
@@ -26,6 +28,7 @@
     "@bltx/test": "1.4.2",
     "@electric-sql/pglite": "0.3.5",
     "drizzle-kit": "0.31.4",
+    "glob": "11.0.3",
     "jest-date": "1.1.6",
     "rimraf": "6.0.1"
   }
