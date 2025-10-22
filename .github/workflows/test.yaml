@@ -41,9 +41,17 @@ jobs:
         uses: medyagh/setup-minikube@latest
         with:
           minikube-version: 1.37.0
-      - name: Install skaffold
-        run: |
-          curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v2.16.1/skaffold-linux-amd64
-          sudo install skaffold /usr/local/bin/
-      - name: Build images
-        run: skaffold build
+      - name: Build Docker images
+        uses: hiberbee/github-action-skaffold@1.27.0
+        with:
+          skaffold-version: 2.16.1
+          command: build
+          # repository: ghcr.io/hiberbee/docker
+          # image: nodejs
+          # tag: ${{ github.sha }}
+      # - name: Install skaffold
+      #   run: |
+      #     curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v2.16.1/skaffold-linux-amd64
+      #     sudo install skaffold /usr/local/bin/
+      # - name: Build images
+      #   run: skaffold build
