@@ -39,9 +39,11 @@ jobs:
       - name: start minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
+        with:
+          minikube-version: 1.37.0
       - name: Install skaffold
         run: |
           curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v2.16.1/skaffold-linux-amd64
           sudo install skaffold /usr/local/bin/
       - name: Build images
-        run: bun skaffold build
+        run: skaffold build
