@@ -50,10 +50,10 @@ deploy:
         namespace: traefik
         createNamespace: true
         setValues:
+          gateway.enabled: false
           providers:
             kubernetesIngress.enabled: false
             kubernetesGateway.enabled: true
-          gateway.enabled: false
       - name: db
         chartPath: k8s/db
         useHelmSecrets: true

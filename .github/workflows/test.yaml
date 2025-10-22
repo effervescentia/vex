@@ -43,11 +43,6 @@ jobs:
           curl -Lo sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64
           sudo install sops /usr/local/bin/
           sops decrypt k8s/secrets.yaml > /dev/null
-      - name: Start minikube
-        id: minikube
-        uses: medyagh/setup-minikube@latest
-        with:
-          minikube-version: 1.37.0
       - name: Install Helm secrets
         run: |
           helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.10
@@ -56,11 +51,17 @@ jobs:
         run: |
           curl -L https://github.com/helmfile/vals/releases/download/v0.42.4/vals_0.42.4_linux_amd64.tar.gz | tar -xzv
           sudo install vals /usr/local/bin/
+      - name: Start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+        with:
+          minikube-version: 1.37.0
       - name: Build Docker images
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
           skaffold-version: 2.16.1
           command: run
-          # repository: ghcr.io/hiberbee/docker
-          # image: nodejs
-          # tag: ${{ github.sha }}
+      - name: Test helm charts
+        run: |
+          helm test api
+          helm test web
