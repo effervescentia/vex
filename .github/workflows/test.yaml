@@ -32,15 +32,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: package.json
-      - name: start minikube
+      - name: Start minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
         with:
           minikube-version: 1.37.0
+      - name: Install Helm secrets
+        run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.10
       - name: Build Docker images
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
