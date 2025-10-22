@@ -30,6 +30,8 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Install GPG key
+        run: echo "$GPG_KEY" | base64 -D | gpg --import
       - name: Checkout
         uses: actions/checkout@v4
       - name: Start minikube
