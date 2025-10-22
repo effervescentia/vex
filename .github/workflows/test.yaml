@@ -43,6 +43,10 @@ jobs:
         run: |
           curl -L https://github.com/helmfile/vals/releases/download/v0.42.4/vals_0.42.4_darwin_amd64.tar.gz | tar -xzv
           sudo install vals /usr/local/bin/
+      - name: Install sops
+        run: |
+          curl -Lo sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64
+          sudo install sops /usr/local/bin/
       - name: Build Docker images
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
