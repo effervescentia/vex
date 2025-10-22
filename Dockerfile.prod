@@ -47,10 +47,11 @@ FROM base AS release-api
 
 ENV NODE_ENV='production'
 
-COPY --from=install /temp/prod ./
+COPY --from=install /temp/prod/node_modules ./node_modules/
 
 ARG APP
 
+COPY --from=install "/temp/prod/apps/$APP/node_modules" "./apps/$APP/node_modules/"
 COPY --from=build "/home/bun/app/apps/$APP/build" "./apps/$APP/build/"
 COPY "apps/$APP/docker" "."
 
