@@ -83,8 +83,6 @@ test:
   - image: api
     structureTests:
       - 'apps/api/test/structure.test.yaml'
-    # custom:
-    #   - command: ''
   - image: web
     structureTests:
       - 'apps/web/test/structure.test.yaml'
