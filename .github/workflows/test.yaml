@@ -42,6 +42,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install sops
         run: |
+          export GPG_EXEC=gpg
           curl -Lo sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64
           sudo install sops /usr/local/bin/
           sops decrypt k8s/secrets.yaml > /dev/null
