@@ -33,7 +33,7 @@ jobs:
       - name: Install GPG key
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
-        run: echo "$GPG_KEY" | base64 -D | gpg --import
+        run: echo "$GPG_KEY" | base64 --decode | gpg --import
       - name: Checkout
         uses: actions/checkout@v4
       - name: Start minikube
