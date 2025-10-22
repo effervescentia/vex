@@ -9,8 +9,12 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: health
+    - name: ready
       image: busybox
       command: ['wget']
-      args: ['{{ include "vex-api.fullname" . }}:{{ .Values.service.port }}/health']
+      args: ['{{ include "vex-api.fullname" . }}:{{ .Values.service.port }}/health/ready']
+    - name: live
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "vex-api.fullname" . }}:{{ .Values.service.port }}/health/live']
   restartPolicy: Never
