@@ -34,9 +34,6 @@ jobs:
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
         run: |
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-
           echo -e "$GPG_KEY" | gpg --batch --import
           ln -sf ~/.gnupg/pubring.kbx ~/.gnupg/pubring.gpg
       - name: Checkout
