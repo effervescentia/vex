@@ -33,15 +33,12 @@ jobs:
       - name: Install GPG key
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           mkdir -p ~/.gnupg
           chmod 700 ~/.gnupg
 
           echo -e "$GPG_KEY" | gpg --batch --import
           ln -sf ~/.gnupg/pubring.kbx ~/.gnupg/pubring.gpg
-
-          gpg --list-secret-keys
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install sops
@@ -55,7 +52,9 @@ jobs:
         with:
           minikube-version: 1.37.0
       - name: Install Helm secrets
-        run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.10
+        run: |
+          helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.10
+          helm secrets decrypt k8s/secrets.yaml > /dev/null
       - name: Install vals
         run: |
           curl -L https://github.com/helmfile/vals/releases/download/v0.42.4/vals_0.42.4_darwin_amd64.tar.gz | tar -xzv
