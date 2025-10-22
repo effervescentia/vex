@@ -22,6 +22,8 @@ RUN bun install --cwd /temp/prod --frozen-lockfile --filter "@vex/$APP" --produc
 
 FROM base AS build
 
+ENV NODE_ENV='production'
+
 COPY --from=install /temp/dev ./
 COPY --parents turbo.json apps/* ./
 
@@ -31,6 +33,8 @@ RUN bun run build --filter "@vex/$APP"
 
 
 FROM base AS release-api
+
+ENV NODE_ENV='production'
 
 COPY --from=install /temp/prod ./
 
@@ -49,6 +53,8 @@ ENTRYPOINT [ "sh", "./entrypoint.sh" ]
 
 FROM caddy:2.10-alpine AS release-web
 WORKDIR /usr/share/caddy
+
+ENV NODE_ENV='production'
 
 RUN mkdir /home/app
 

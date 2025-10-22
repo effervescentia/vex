@@ -14,6 +14,10 @@ podLabels: {}
 service:
   port: 8080
 
+health:
+  enabled: true
+  port: 9090
+
 gateway:
   name: traefik-gateway
   namespace: traefik

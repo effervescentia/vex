@@ -10,6 +10,12 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    {{- if .Values.health.enabled }}
+    - port: {{ .Values.health.port }}
+      targetPort: http-health
+      protocol: TCP
+      name: http-health
+    {{- end }}
   selector:
     app.kubernetes.io/component: server
     {{- include "vex-web.selectorLabels" . | nindent 4 }}

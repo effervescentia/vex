@@ -5,6 +5,8 @@ import { integrationTestFactory } from '@bltx/test';
 export const setupIntegrationTest = integrationTestFactory(schema, {
   PORT: 8080,
 
+  POSTGRES_HOSTNAME: 'localhost',
+  POSTGRES_PORT: 5432,
   POSTGRES_DATABASE: 'test',
   POSTGRES_USERNAME: 'test',
   POSTGRES_PASSWORD: 'test',

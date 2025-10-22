@@ -7,6 +7,8 @@ metadata:
 data:
   PORT: {{ .Values.service.port | quote }}
   
+  POSTGRES_HOSTNAME: {{ .Values.postgres.hostname }}
+  POSTGRES_PORT: {{ .Values.postgres.port | quote }}
   POSTGRES_DATABASE: {{ .Values.postgres.database }}
   POSTGRES_USERNAME: {{ .Values.postgres.username }}
   

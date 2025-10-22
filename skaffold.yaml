@@ -83,6 +83,8 @@ test:
   - image: api
     structureTests:
       - 'apps/api/test/structure.test.yaml'
+    # custom:
+    #   - command: ''
   - image: web
     structureTests:
       - 'apps/web/test/structure.test.yaml'
@@ -92,12 +94,26 @@ profiles:
     activation:
       - command: dev
     patches:
+      - op: remove
+        path: /test
+
+      - op: add
+        path: /deploy/helm/releases/1/skipBuildDependencies
+        value: true
+
+      # dev api config
       - op: replace
         path: /build/artifacts/0/docker/dockerfile
         value: Dockerfile.dev
       - op: replace
         path: /build/artifacts/0/docker/target
         value: dev-api
+      - op: add
+        path: /deploy/helm/releases/2/setValues
+        value:
+          health.enabled: false
+
+      # dev web config
       - op: replace
         path: /build/artifacts/1/docker/dockerfile
         value: Dockerfile.dev
@@ -105,5 +121,6 @@ profiles:
         path: /build/artifacts/1/docker/target
         value: dev-web
       - op: add
-        path: /deploy/helm/releases/1/skipBuildDependencies
-        value: true
+        path: /deploy/helm/releases/3/setValues
+        value:
+          health.enabled: false

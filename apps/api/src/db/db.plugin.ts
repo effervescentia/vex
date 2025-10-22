@@ -9,6 +9,8 @@ export const DatabasePlugin = createDatabasePlugin({
   env: EnvironmentPlugin,
   factory: (env) =>
     new SQL({
+      hostname: env.POSTGRES_HOSTNAME,
+      port: env.POSTGRES_PORT,
       database: env.POSTGRES_DATABASE,
       username: env.POSTGRES_USERNAME,
       password: env.POSTGRES_PASSWORD,

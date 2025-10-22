@@ -12,7 +12,7 @@
     "tdd": "bun test --watch"
   },
   "dependencies": {
-    "@bltx/core": "1.4.1",
+    "@bltx/core": "1.5.0",
     "@bltx/db": "1.6.3",
     "@elysiajs/cors": "1.3.3",
     "date-fns": "4.1.0",

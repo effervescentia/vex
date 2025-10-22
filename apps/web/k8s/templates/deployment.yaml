@@ -32,7 +32,22 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if .Values.health.enabled }}
+            - name: http-health
+              containerPort: {{ .Values.health.port }}
+              protocol: TCP
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "vex-web.fullname" . }}
+          {{- if .Values.health.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-health
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http-health
+          {{- end }}
     

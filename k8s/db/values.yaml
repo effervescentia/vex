@@ -1,13 +1,9 @@
 nameOverride: ""
 fullnameOverride: ""
 
-db:
-  postgres:
+postgres:
+  auth:
     database: vex
     username: vex
-    secretName: postgres-secrets
-    configmapName: postgres-config
-
-postgres:
-  auth.existingSecret: postgres-secrets
-  primary.existingConfigmap: postgres-config
+    enablePostgresUser: false
+    existingSecret: postgres-secrets

@@ -14,6 +14,9 @@ podLabels: {}
 service:
   port: 8080
 
+health:
+  enabled: true
+
 gateway:
   name: traefik-gateway
   namespace: traefik
@@ -26,6 +29,8 @@ tls:
   namespace: traefik
 
 postgres:
+  hostname: db-postgres
+  port: 5432
   database: vex
   username: vex
 

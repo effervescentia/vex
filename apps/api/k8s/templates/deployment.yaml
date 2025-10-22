@@ -37,4 +37,13 @@ spec:
                 name: "{{ include "vex-api.fullname" . }}-secrets"
             - configMapRef:
                 name: {{ include "vex-api.fullname" . }}
-
+          {{- if .Values.health.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          {{- end }}

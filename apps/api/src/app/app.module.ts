@@ -12,7 +12,7 @@ export const App = new Elysia()
 
   .use(cors())
   .use(EnvironmentPlugin)
-  .use(LoggerPlugin)
+  // .use(LoggerPlugin)
   .use(HealthController)
 
   .use(AccountController)

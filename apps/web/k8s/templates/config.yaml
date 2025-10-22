@@ -6,5 +6,6 @@ metadata:
     {{- include "vex-web.labels" . | nindent 4 }}
 data:
   PORT: {{ .Values.service.port | quote }}
+  PORT_HEALTH: {{ .Values.health.port | quote }}
   
   VEX_API_HOST: {{ .Values.api.host }}
