@@ -25,3 +25,23 @@ jobs:
         run: bun run check:types
       - name: Run tests
         run: bun run test
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+      - name: Install skaffold
+        run: |
+          curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v2.16.1/skaffold-linux-amd64
+          sudo install skaffold /usr/local/bin/
+      - name: Build images
+        run: bun skaffold build
