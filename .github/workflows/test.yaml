@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "$GPG_KEY" | gpg --batch --import
           echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback -K
-          gpg --list-secret-keys --keyid-format LONG
+          ln -sf ~/.gnupg/pubring.kbx ~/.gnupg/pubring.gpg
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install sops
