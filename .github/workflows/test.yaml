@@ -33,9 +33,18 @@ jobs:
       - name: Install GPG key
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
-        run: echo "$GPG_KEY" | base64 --decode | gpg --import
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "$GPG_KEY" | gpg --batch --import
+          echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback -K
+          gpg --list-secret-keys --keyid-format LONG
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install sops
+        run: |
+          curl -Lo sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64
+          sudo install sops /usr/local/bin/
+          sops decrypt k8s/secrets.yaml > /dev/null
       - name: Start minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
@@ -47,11 +56,6 @@ jobs:
         run: |
           curl -L https://github.com/helmfile/vals/releases/download/v0.42.4/vals_0.42.4_darwin_amd64.tar.gz | tar -xzv
           sudo install vals /usr/local/bin/
-      - name: Install sops
-        run: |
-          curl -Lo sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64
-          sudo install sops /usr/local/bin/
-          sops decrypt k8s/secrets.yaml > /dev/null
       - name: Build Docker images
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
