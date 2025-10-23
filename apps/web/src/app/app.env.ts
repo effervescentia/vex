@@ -1,4 +1,3 @@
-import envSchema from 'env-schema';
 import z from 'zod';
 
 declare global {
@@ -13,7 +12,32 @@ const EnvironmentDTO = z.object({
 
 export type Environment = z.infer<typeof EnvironmentDTO>;
 
-export const env: Environment = envSchema({
-  schema: EnvironmentDTO,
-  data: window.vexenv,
-});
+class AppEnvironment {
+  private value: Environment | null = null;
+  private failed = false;
+
+  init() {
+    if (this.failed) return;
+
+    if (this.value) {
+      console.warn('environment is already initialized');
+      return;
+    }
+
+    try {
+      this.value = EnvironmentDTO.parse(window.vexenv);
+    } catch (err) {
+      console.error('environment failed to initialize, subsequent attempts will be ignored');
+      this.failed = true;
+      throw err;
+    }
+  }
+
+  get() {
+    if (!this.value) throw new Error('environment must be initialized first');
+
+    return this.value;
+  }
+}
+
+export const env = new AppEnvironment();

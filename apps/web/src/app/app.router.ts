@@ -1,3 +1,5 @@
-import { createRouter } from 'type-route';
+import { createRouter, defineRoute } from 'type-route';
 
-export const { RouteProvider, useRoute, routes } = createRouter({});
+export const { RouteProvider, useRoute, routes } = createRouter({
+  home: defineRoute('/'),
+});
