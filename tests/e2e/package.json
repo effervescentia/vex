@@ -2,8 +2,7 @@
   "name": "@vex/test-e2e",
   "private": true,
   "scripts": {
-    "dev": "playwright test --ui",
-    "test:e2e": "playwright test"
+    "dev": "playwright test --ui"
   },
   "dependencies": {
     "@playwright/test": "1.56.1",

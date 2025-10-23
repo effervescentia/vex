@@ -13,8 +13,7 @@ build:
         target: release-api
         buildArgs:
           APP: api
-        cacheFrom:
-          - api
+        cacheFrom: [api]
       sync:
         manual:
           - src: 'apps/api/**/*.ts'
@@ -26,8 +25,7 @@ build:
         target: release-web
         buildArgs:
           APP: web
-        cacheFrom:
-          - web
+        cacheFrom: [web]
       sync:
         manual:
           - src: 'apps/web/**/*.{ts,tsx,html}'
@@ -122,3 +120,21 @@ profiles:
         path: /deploy/helm/releases/3/setValues
         value:
           health.enabled: false
+  - name: ci
+    activation:
+      - env: CI=true
+    patches:
+      - op: add
+        path: /build/artifacts/-
+        value:
+          image: test-e2e
+          docker:
+            dockerfile: tests/e2e/Dockerfile
+            cacheFrom: [test-e2e]
+    verify:
+      - name: test-e2e
+        container:
+          image: test-e2e
+          name: test-e2e
+        executionMode:
+          kubernetesCluster: {}
