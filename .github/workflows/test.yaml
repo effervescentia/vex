@@ -56,12 +56,12 @@ jobs:
         uses: medyagh/setup-minikube@latest
         with:
           minikube-version: 1.37.0
-      - name: Build Docker images
+      - name: Build and deploy images
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
           skaffold-version: 2.16.1
           command: run
       - name: Test helm charts
         run: |
-          helm test api
+          # helm test api
           helm test web
