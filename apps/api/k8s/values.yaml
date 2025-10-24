@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: ''
+  pullPolicy: IfNotPresent
+  tag: ''
+
+nameOverride: ''
+fullnameOverride: ''
+
+podAnnotations: {}
+podLabels: {}
+
+service:
+  port: 8080
+
+health:
+  enabled: true
+
+gateway:
+  name: traefik-gateway
+  namespace: traefik
+  sectionName: api
+
+route:
+  hostname: api.vex.localhost
+
+tls:
+  namespace: traefik
+
+postgres:
+  hostname: db-postgres
+  port: 5432
+  database: vex
+  username: vex
+
+account:
+  alias:
+    max: 3
+    expiry:
+      short: 1d
+      long: 1mo

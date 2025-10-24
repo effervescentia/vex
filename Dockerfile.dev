@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1-labs
+FROM oven/bun:1.3-alpine AS base
+WORKDIR /home/bun/app
+
+COPY package.json bun.lock ./
+COPY --parents */*/package.json ./
+
+RUN bun install --frozen-lockfile
+
+COPY . .
+
+ARG APP
+
+WORKDIR "/home/bun/app/apps/$APP"
+
+
+FROM base AS dev-api
+
+ENV NODE_ENV='development'
+
+ARG ENTRYPOINT_CMD='bun --watch src/main.ts'
+ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
+
+EXPOSE 8080/tcp
+ENTRYPOINT [ "sh", "./docker/entrypoint.sh" ]
+
+
+FROM base AS dev-web
+
+ENV NODE_ENV='development'
+
+ARG ENV_FILE="public/env.js"
+ENV ENV_FILE=$ENV_FILE
+
+ARG ENTRYPOINT_CMD='node node_modules/.bin/vite'
+ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
+
+EXPOSE 8080/tcp
+ENTRYPOINT [ "sh", "./docker/entrypoint.sh" ]

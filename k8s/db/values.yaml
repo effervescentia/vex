@@ -1,0 +1,9 @@
+nameOverride: ""
+fullnameOverride: ""
+
+postgres:
+  auth:
+    database: vex
+    username: vex
+    enablePostgresUser: false
+    existingSecret: postgres-secrets

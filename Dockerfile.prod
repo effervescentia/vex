@@ -1,0 +1,85 @@
+# syntax=docker/dockerfile:1-labs
+FROM oven/bun:1.3-alpine AS base
+WORKDIR /home/bun/app
+
+
+FROM base AS install
+
+RUN mkdir -p /temp/dev /temp/prod
+
+COPY package.json bun.lock /temp/dev/
+COPY --parents */*/package.json /temp/dev/
+
+COPY package.json bun.lock /temp/prod/
+COPY --parents */*/package.json /temp/prod/
+
+RUN bun install --cwd /temp/dev --frozen-lockfile
+
+ARG APP
+
+RUN bun install --cwd /temp/prod --frozen-lockfile --filter "@vex/$APP" --production
+
+
+FROM base AS test
+
+ENV NODE_ENV='test'
+
+COPY --from=install /temp/dev ./
+COPY --parents turbo.json apps/* ./
+
+ARG APP
+
+RUN bun run test:unit --filter "@vex/$APP"
+
+
+FROM base AS build
+
+ENV NODE_ENV='production'
+
+COPY --from=test /home/bun/app ./
+
+ARG APP
+
+RUN bun run build --filter "@vex/$APP"
+
+
+FROM base AS release-api
+
+ENV NODE_ENV='production'
+
+COPY --from=install /temp/prod/node_modules ./node_modules/
+
+ARG APP
+
+COPY --from=install "/temp/prod/apps/$APP/node_modules" "./apps/$APP/node_modules/"
+COPY --from=build "/home/bun/app/apps/$APP/build" "./apps/$APP/build/"
+COPY "apps/$APP/docker" "."
+
+ARG ENTRYPOINT_CMD="bun --cwd apps/$APP build/main.js"
+ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
+
+USER bun
+EXPOSE 8080/tcp
+ENTRYPOINT [ "sh", "./entrypoint.sh" ]
+
+
+FROM caddy:2.10-alpine AS release-web
+WORKDIR /usr/share/caddy
+
+ENV NODE_ENV='production'
+
+RUN mkdir /home/app
+
+ARG APP
+
+COPY --from=build "/home/bun/app/apps/$APP/build" .
+COPY "apps/$APP/docker/*" /home/app/
+
+ARG ENV_FILE='env.js'
+ENV ENV_FILE=$ENV_FILE
+
+ARG ENTRYPOINT_CMD='caddy run --config /home/app/Caddyfile --adapter caddyfile'
+ENV ENTRYPOINT_CMD=$ENTRYPOINT_CMD
+
+ENTRYPOINT [ "sh", "/home/app/entrypoint.sh" ]
+CMD []

@@ -1,0 +1,33 @@
+replicaCount: 1
+
+image:
+  repository: ""
+  pullPolicy: IfNotPresent
+  tag: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+service:
+  port: 8080
+
+health:
+  enabled: true
+  port: 9090
+
+gateway:
+  name: traefik-gateway
+  namespace: traefik
+  sectionName: web
+
+route:
+  hostname: app.vex.localhost
+
+tls:
+  namespace: traefik
+
+api:
+  host: 'https://api.vex.localhost:1337'

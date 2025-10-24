@@ -1,0 +1,16 @@
+**/*
+!package.json
+!bun.lock
+!turbo.json
+!biome.json
+!*/*/package.json
+!*/*/tsconfig.json
+!*/*/bunfig.toml
+!*/*/vite.config.mts
+!*/*/index.html
+!*/*/docker/**
+!*/*/public/**
+!*/*/src/**
+!*/*/test/**
+!*/*/types/**
+node_modules/**

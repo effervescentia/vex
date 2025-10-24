@@ -2,18 +2,21 @@
   "$schema": "https://turborepo.com/schema.json",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["src/**"],
+      "inputs": ["src/**", "public/**", "index.html", "vite.config.mts", "tsconfig.json", "bunfig.toml"],
       "outputs": ["build/**"]
     },
-    "dev": {
-      "persistent": true,
-      "cache": false
-    },
     "check:types": {
-      "inputs": ["src/**"]
+      "inputs": ["src/**", "types/**", "tsconfig.json"]
     },
     "test": {
+      "inputs": ["src/**"],
+      "cache": false
+    },
+    "test:unit": {
+      "inputs": ["src/**"],
+      "cache": false
+    },
+    "test:integration": {
       "inputs": ["src/**"],
       "cache": false
     }

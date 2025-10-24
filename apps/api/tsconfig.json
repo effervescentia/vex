@@ -6,7 +6,6 @@
       "@api/*": ["./src/*"],
       "@test/*": ["./test/*"]
     },
-
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,

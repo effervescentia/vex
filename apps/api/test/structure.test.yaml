@@ -1,0 +1,15 @@
+schemaVersion: 2.0.0
+
+fileExistenceTests:
+  - name: 'has bun isolated node_modules'
+    path: '/home/bun/app/node_modules/.bun'
+    shouldExist: true
+  - name: 'has package node_modules'
+    path: '/home/bun/app/apps/api/node_modules'
+    shouldExist: true
+  - name: 'has build artifacts'
+    path: '/home/bun/app/apps/api/build/main.js'
+    shouldExist: true
+  - name: 'has entrypoint'
+    path: '/home/bun/app/entrypoint.sh'
+    shouldExist: true
