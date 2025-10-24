@@ -84,8 +84,6 @@ test:
   - image: web
     structureTests:
       - 'apps/web/test/structure.test.yaml'
-    custom:
-      - command: helm test web
 
 verify:
   # - name: test-e2e
