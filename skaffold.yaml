@@ -86,18 +86,10 @@ test:
       - 'apps/web/test/structure.test.yaml'
 
 verify:
-  # - name: test-e2e
-  #   container:
-  #     image: '{{.IMAGE_NAME_test-e2e}}'
-  #     name: test-e2e
-    # executionMode:
-    #   kubernetesCluster: {}
-  - name: helm-verifier
+  - name: test-e2e
     container:
-      image: alpine/helm:3.18.4
-      name: helm-verifier
-      command: [helm]
-      args: [test, web]
+      image: '{{.IMAGE_REPO_test-e2e}}:{{.IMAGE_TAG_test-e2e}}@{{.IMAGE_DIGEST_test-e2e}}'
+      name: test-e2e
 
 profiles:
   - name: dev
