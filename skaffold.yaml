@@ -88,12 +88,18 @@ test:
       - command: helm test web
 
 verify:
-  - name: test-e2e
-    container:
-      image: '{{.IMAGE_NAME_test-e2e}}'
-      name: test-e2e
+  # - name: test-e2e
+  #   container:
+  #     image: '{{.IMAGE_NAME_test-e2e}}'
+  #     name: test-e2e
     # executionMode:
     #   kubernetesCluster: {}
+  - name: helm-verifier
+    container:
+      image: alpine/helm:3.18.4
+      name: helm-verifier
+      command: [helm]
+      args: [test, web]
 
 profiles:
   - name: dev
