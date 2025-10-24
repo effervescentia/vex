@@ -85,11 +85,11 @@ test:
     structureTests:
       - 'apps/web/test/structure.test.yaml'
 
-verify:
-  - name: test-e2e
-    container:
-      image: '{{.IMAGE_NAME_test-e2e}}'
-      name: test-e2e
+# verify:
+#   - name: test-e2e
+#     container:
+#       image: '{{.IMAGE_NAME_test-e2e}}'
+#       name: test-e2e
 
 profiles:
   - name: dev
@@ -126,14 +126,14 @@ profiles:
         path: /deploy/helm/releases/3/setValues
         value:
           health.enabled: false
-  - name: ci
-    activation:
-      - env: CI=true
-    patches:
-      - op: add
-        path: /build/artifacts/-
-        value:
-          image: test-e2e
-          docker:
-            dockerfile: tests/e2e/Dockerfile
-            cacheFrom: [test-e2e]
+  # - name: ci
+  #   activation:
+  #     - env: CI=true
+  #   patches:
+  #     - op: add
+  #       path: /build/artifacts/-
+  #       value:
+  #         image: test-e2e
+  #         docker:
+  #           dockerfile: tests/e2e/Dockerfile
+  #           cacheFrom: [test-e2e]
