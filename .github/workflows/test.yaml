@@ -60,13 +60,11 @@ jobs:
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
           skaffold-version: 2.16.1
-          kubectl-version: 1.34.1
           command: run
       - name: Verify deployments
         uses: hiberbee/github-action-skaffold@1.27.0
         with:
           skaffold-version: 2.16.1
-          kubectl-version: 1.34.1
           command: verify
       # - name: Test helm charts
       #   run: |
