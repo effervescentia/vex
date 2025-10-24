@@ -84,6 +84,16 @@ test:
   - image: web
     structureTests:
       - 'apps/web/test/structure.test.yaml'
+    custom:
+      - command: helm test web
+
+verify:
+  - name: test-e2e
+    container:
+      image: '{{.IMAGE_NAME_test-e2e}}'
+      name: test-e2e
+    # executionMode:
+    #   kubernetesCluster: {}
 
 profiles:
   - name: dev
@@ -131,10 +141,3 @@ profiles:
           docker:
             dockerfile: tests/e2e/Dockerfile
             cacheFrom: [test-e2e]
-    verify:
-      - name: test-e2e
-        container:
-          image: '{{.IMAGE_NAME_test-e2e}}'
-          name: test-e2e
-        executionMode:
-          kubernetesCluster: {}
