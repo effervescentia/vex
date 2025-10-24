@@ -88,7 +88,7 @@ test:
 verify:
   - name: test-e2e
     container:
-      image: test-e2e
+      image: '{{.IMAGE_NAME_test-e2e}}'
       name: test-e2e
 
 profiles:
