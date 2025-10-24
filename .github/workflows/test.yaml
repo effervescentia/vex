@@ -68,5 +68,5 @@ jobs:
           command: verify
       - name: Test helm charts
         run: |
-          # helm test api
           helm test web
+          # helm test api
