@@ -1,107 +1,117 @@
+import { AccountService } from '@api/account/account.service';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
-import Elysia from 'elysia';
+import Elysia, { type CookieOptions, t } from 'elysia';
+import { LOGIN_TTL, SIGNUP_TTL } from './auth.const';
+import { AuthService } from './auth.service';
+import { LoginChallengeResponse } from './data/login-challenge.res';
+import { NegotiateLoginRequest } from './data/negotiate-login.req';
+import { NegotiateSignupRequest } from './data/negotiate-signup.req';
+import { SignupChallengeResponse } from './data/signup-challenge.res';
 
-// const AUTH_COOKIE: CookieOptions = {
-//   domain: 'api.vex.localhost',
-//   sameSite: true,
-//   httpOnly: true,
-//   secure: true,
-// };
+const AUTH_COOKIE: CookieOptions = {
+  domain: 'api.vex.localhost',
+  sameSite: true,
+  httpOnly: true,
+  secure: true,
+};
 
-export const AuthController = new Elysia({ prefix: '/auth' }).use(DatabasePlugin).use(EnvironmentPlugin);
-// .use(RedisPlugin)
-// .use((app) =>
-//   app.use(
-//     jwt({
-//       name: 'AccessToken',
-//       secret: app.decorator.env().JWT_AUTH_SECRET,
-//       schema: t.Object({ sessionID: t.Number() }),
-//       exp: '10m',
-//     }),
-//   ),
-// )
-// .derive({ as: 'scoped' }, ({ db, redis, env, AccessToken }) => ({
-//   service: new AuthService(db(), redis(), env()),
-//   accountService: new AccountService(db(), env()),
-//   refreshAccessToken: async (accessToken: Cookie<string | undefined>, sessionID: number) =>
-//     accessToken.set({
-//       ...AUTH_COOKIE,
-//       value: await AccessToken.sign({ sessionID }),
-//       maxAge: ACCESS_TOKEN_TTL * 1000,
-//     }),
-// }))
+export const AuthController = new Elysia({ prefix: '/auth' })
+  .use(DatabasePlugin)
+  .use(EnvironmentPlugin)
+  // .use(RedisPlugin)
+  // .use((app) =>
+  //   app.use(
+  //     jwt({
+  //       name: 'AccessToken',
+  //       secret: app.decorator.env().JWT_AUTH_SECRET,
+  //       schema: t.Object({ sessionID: t.Number() }),
+  //       exp: '10m',
+  //     }),
+  //   ),
+  // )
+  // .derive({ as: 'scoped' }, ({ db, redis, env, AccessToken }) => ({
+  .derive({ as: 'scoped' }, ({ db, env }) => ({
+    service: new AuthService(db(), null!, env()),
+    accountService: new AccountService(db(), env()),
+    // refreshAccessToken: async (accessToken: Cookie<string | undefined>, sessionID: number) =>
+    //   accessToken.set({
+    //     ...AUTH_COOKIE,
+    //     value: await AccessToken.sign({ sessionID }),
+    //     maxAge: ACCESS_TOKEN_TTL * 1000,
+    //   }),
+  }))
 
-// .post(
-//   '/signup/negotiate',
-//   async ({ service, body, cookie: { signupRequestID } }) => {
-//     const { challenge, requestID } = await service.negotiateSignup(body);
+  .post(
+    '/signup/negotiate',
+    async ({ service, body, cookie: { signupRequestID } }) => {
+      const { challenge, requestID } = await service.negotiateSignup(body);
 
-//     signupRequestID.set({
-//       ...AUTH_COOKIE,
-//       value: requestID,
-//       maxAge: SIGNUP_TTL * 1000,
-//     });
+      signupRequestID.set({
+        ...AUTH_COOKIE,
+        value: requestID,
+        maxAge: SIGNUP_TTL * 1000,
+      });
 
-//     return { challenge };
-//   },
-//   {
-//     body: NegotiateSignupRequest,
-//     cookie: t.Object({ signupRequestID: t.Optional(t.String()) }),
-//     response: {
-//       200: SignupChallengeResponse,
-//     },
-//   },
-// )
+      return { challenge };
+    },
+    {
+      body: NegotiateSignupRequest,
+      cookie: t.Object({ signupRequestID: t.Optional(t.String()) }),
+      response: {
+        200: SignupChallengeResponse,
+      },
+    },
+  )
 
-// .post(
-//   '/signup/verify',
-//   async ({ service, body, cookie: { signupRequestID, accessToken }, refreshAccessToken }) => {
-//     const requestID = signupRequestID.value;
-//     if (!requestID) throw new NotFoundError();
-//     signupRequestID.remove();
+  // .post(
+  //   '/signup/verify',
+  //   async ({ service, body, cookie: { signupRequestID, accessToken }, refreshAccessToken }) => {
+  //     const requestID = signupRequestID.value;
+  //     if (!requestID) throw new NotFoundError();
+  //     signupRequestID.remove();
 
-//     const { account, session } = await service.verifySignup(requestID, body);
+  //     const { account, session } = await service.verifySignup(requestID, body);
 
-//     await refreshAccessToken(accessToken, session.id);
+  //     await refreshAccessToken(accessToken, session.id);
 
-//     return { account };
-//   },
-//   {
-//     body: VerifySignupRequest,
-//     cookie: t.Cookie({
-//       signupRequestID: t.Optional(t.String()),
-//       accessToken: t.Optional(t.String()),
-//     }),
-//     response: {
-//       200: SignupResponse,
-//     },
-//   },
-// )
+  //     return { account };
+  //   },
+  //   {
+  //     body: VerifySignupRequest,
+  //     cookie: t.Cookie({
+  //       signupRequestID: t.Optional(t.String()),
+  //       accessToken: t.Optional(t.String()),
+  //     }),
+  //     response: {
+  //       200: SignupResponse,
+  //     },
+  //   },
+  // )
 
-// .post(
-//   '/login/negotiate',
-//   async ({ service, body, cookie: { loginRequestID } }) => {
-//     const { challenge, requestID } = await service.negotiateLogin(body);
+  .post(
+    '/login/negotiate',
+    async ({ service, body, cookie: { loginRequestID } }) => {
+      const { challenge, requestID } = await service.negotiateLogin(body);
 
-//     loginRequestID.set({
-//       ...AUTH_COOKIE,
-//       value: requestID,
-//       maxAge: LOGIN_TTL * 1000,
-//     });
+      loginRequestID.set({
+        ...AUTH_COOKIE,
+        value: requestID,
+        maxAge: LOGIN_TTL * 1000,
+      });
 
-//     return { challenge };
-//   },
-//   {
-//     body: NegotiateLoginRequest,
-//     cookie: t.Cookie({
-//       loginRequestID: t.Optional(t.String()),
-//     }),
-//     response: {
-//       200: LoginChallengeResponse,
-//     },
-//   },
-// )
+      return { challenge };
+    },
+    {
+      body: NegotiateLoginRequest,
+      cookie: t.Cookie({
+        loginRequestID: t.Optional(t.String()),
+      }),
+      response: {
+        200: LoginChallengeResponse,
+      },
+    },
+  );
 
 // .post(
 //   '/login/verify',
