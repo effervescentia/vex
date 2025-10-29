@@ -1,9 +1,41 @@
 nameOverride: ""
 fullnameOverride: ""
 
+migration:
+  image:
+    repository: ''
+    pullPolicy: IfNotPresent
+    tag: ''
+
+  postgres:
+    hostname: db-postgres
+    port: 5432
+    database: vex
+    username: postgres
+
 postgres:
   auth:
     database: vex
     username: vex
-    enablePostgresUser: false
-    existingSecret: postgres-secrets
+    existingSecret: postgres-auth-secrets
+
+  primary:
+    extraEnvVarsSecret: postgres-primary-secrets
+    extraEnvVars:
+      - name: POSTGRESQL_PGAUDIT_LOG
+        value: "all"
+
+    initdb:
+      user: postgres
+      scripts:
+        access.sql: |
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public
+            GRANT ALL PRIVILEGES ON TABLES TO vex;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public
+            GRANT ALL PRIVILEGES ON SEQUENCES TO vex;
+
+redis:
+  architecture: standalone
+  auth:
+    existingSecret: redis-secrets
+    existingSecretPasswordKey: redis-password

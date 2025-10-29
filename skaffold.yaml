@@ -9,7 +9,7 @@ build:
   artifacts:
     - image: api
       docker:
-        dockerfile: Dockerfile.prod
+        dockerfile: docker/Dockerfile.prod
         target: release-api
         buildArgs:
           APP: api
@@ -21,7 +21,7 @@ build:
             dest: '.'
     - image: web
       docker:
-        dockerfile: Dockerfile.prod
+        dockerfile: docker/Dockerfile.prod
         target: release-web
         buildArgs:
           APP: web
@@ -34,6 +34,10 @@ build:
           - src: 'apps/api/**/*.ts'
             strip: apps/api
             dest: ../api
+    - image: db
+      docker:
+        dockerfile: docker/Dockerfile.db
+        cacheFrom: [db]
 
 manifests:
   rawYaml:
@@ -54,7 +58,11 @@ deploy:
             kubernetesGateway.enabled: true
       - name: db
         chartPath: k8s/db
+        wait: true
         useHelmSecrets: true
+        setValueTemplates:
+          migration.image.repository: '{{.IMAGE_REPO_db}}'
+          migration.image.tag: '{{.IMAGE_TAG_db}}@{{.IMAGE_DIGEST_db}}'
       - name: api
         chartPath: apps/api/k8s
         useHelmSecrets: true
@@ -106,7 +114,7 @@ profiles:
       # dev api config
       - op: replace
         path: /build/artifacts/0/docker/dockerfile
-        value: Dockerfile.dev
+        value: docker/Dockerfile.dev
       - op: replace
         path: /build/artifacts/0/docker/target
         value: dev-api
@@ -118,7 +126,7 @@ profiles:
       # dev web config
       - op: replace
         path: /build/artifacts/1/docker/dockerfile
-        value: Dockerfile.dev
+        value: docker/Dockerfile.dev
       - op: replace
         path: /build/artifacts/1/docker/target
         value: dev-web

@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "vex-db.fullname" . }}-migration"
+  labels:
+    {{- include "vex-db.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "vex-db.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: "{{ .Chart.Name }}-migration"
+        image: "{{ .Values.migration.image.repository }}:{{ .Values.migration.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.migration.image.pullPolicy }}
+        envFrom:
+          - secretRef:
+              name: "{{ include "vex-db.fullname" . }}-migration-secrets"
+          - configMapRef:
+              name: "{{ include "vex-db.fullname" . }}-migration-config"
+      restartPolicy: Never

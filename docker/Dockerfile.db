@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1-labs
+FROM oven/bun:1.3-alpine
+WORKDIR /home/bun/app
+
+COPY --parents package.json bun.lock */*/package.json ./
+
+RUN bun install --frozen-lockfile --filter "@vex/api"
+
+WORKDIR /home/bun/app/apps/api
+
+COPY apps/api/drizzle.config.mts .
+COPY apps/api/drizzle ./drizzle
+
+ENTRYPOINT [ "bunx", "--bun", "drizzle-kit", "migrate", "--config", "drizzle.config.mts" ]
+
