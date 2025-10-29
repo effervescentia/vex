@@ -1,6 +1,7 @@
 import { AccountService } from '@api/account/account.service';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
+import jwt from '@elysiajs/jwt';
 import Elysia, { type CookieOptions, t } from 'elysia';
 import { LOGIN_TTL, SIGNUP_TTL } from './auth.const';
 import { AuthService } from './auth.service';
@@ -20,16 +21,14 @@ export const AuthController = new Elysia({ prefix: '/auth' })
   .use(DatabasePlugin)
   .use(EnvironmentPlugin)
   // .use(RedisPlugin)
-  // .use((app) =>
-  //   app.use(
-  //     jwt({
-  //       name: 'AccessToken',
-  //       secret: app.decorator.env().JWT_AUTH_SECRET,
-  //       schema: t.Object({ sessionID: t.Number() }),
-  //       exp: '10m',
-  //     }),
-  //   ),
-  // )
+  .use((app) =>
+    jwt({
+      name: 'AccessToken',
+      secret: app.decorator.env().JWT_AUTH_SECRET,
+      schema: t.Object({ sessionID: t.Number() }),
+      exp: '10m',
+    }),
+  )
   // .derive({ as: 'scoped' }, ({ db, redis, env, AccessToken }) => ({
   .derive({ as: 'scoped' }, ({ db, env }) => ({
     service: new AuthService(db(), null!, env()),
