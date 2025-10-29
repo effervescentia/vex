@@ -1,8 +1,8 @@
 import { AccountDetailsDTO } from '@api/account/data/account-details.dto';
 import { type Static, t } from 'elysia';
 
-export type Login = Static<typeof LoginResponse>;
+export type Authenticated = Static<typeof AuthenticatedResponse>;
 
-export const LoginResponse = t.Object({
+export const AuthenticatedResponse = t.Object({
   account: AccountDetailsDTO,
 });
