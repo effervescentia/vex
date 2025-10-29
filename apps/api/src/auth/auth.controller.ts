@@ -1,6 +1,7 @@
 import { AccountService } from '@api/account/account.service';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
+import { RedisPlugin } from '@api/redis/redis.plugin';
 import jwt from '@elysiajs/jwt';
 import Elysia, { Cookie, type CookieOptions, NotFoundError, t } from 'elysia';
 import { ACCESS_TOKEN_TTL, LOGIN_TTL, SIGNUP_TTL } from './auth.const';
@@ -22,8 +23,8 @@ const AUTH_COOKIE: CookieOptions = {
 
 export const AuthController = new Elysia({ prefix: '/auth' })
   .use(DatabasePlugin)
+  .use(RedisPlugin)
   .use(EnvironmentPlugin)
-  // .use(RedisPlugin)
   .use((app) =>
     jwt({
       name: 'AccessToken',
@@ -32,9 +33,8 @@ export const AuthController = new Elysia({ prefix: '/auth' })
       exp: '10m',
     }),
   )
-  // .derive({ as: 'scoped' }, ({ db, redis, env, AccessToken }) => ({
-  .derive({ as: 'scoped' }, ({ db, env, AccessToken }) => ({
-    service: new AuthService(db(), null!, env()),
+  .derive({ as: 'scoped' }, ({ db, redis, env, AccessToken }) => ({
+    service: new AuthService(db(), redis(), env()),
     accountService: new AccountService(db(), env()),
 
     refreshAccessToken: async (accessToken: Cookie<string | undefined>, sessionID: number) =>
