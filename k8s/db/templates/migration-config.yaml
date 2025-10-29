@@ -9,4 +9,3 @@ data:
   POSTGRES_PORT: {{ .Values.migration.postgres.port | quote }}
   POSTGRES_DATABASE: {{ .Values.migration.postgres.database }}
   POSTGRES_USERNAME: {{ .Values.migration.postgres.username }}
-  
