@@ -1,5 +1,5 @@
 import { client as webauthn } from '@passwordless-id/webauthn';
-import { DOMAIN } from '@web/app/app.config';
+import { DOMAIN } from '@web/app/app.const';
 import { routes } from '@web/app/app.router';
 import { client } from '@web/client';
 import { accountAtom } from '@web/data/account.atom';

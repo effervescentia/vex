@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: <explanation> */
 import { accountAtom } from '@web/data/account.atom';
 import { useSetup } from '@web/hooks/use-setup.hook';
 import { Fingerprint } from '@web/pages/fingerprint/fingerprint.page';
@@ -7,7 +6,7 @@ import { Login } from '@web/pages/login/login.page';
 import { Signup } from '@web/pages/signup/signup.page';
 import { themeClass } from '@web/styles/theme.css';
 import { useAtomValue } from 'jotai';
-import { type JSX } from 'react';
+import type { JSX } from 'react';
 import { match } from 'ts-pattern';
 import { routes, useRoute } from './app.router';
 
