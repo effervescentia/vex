@@ -4,7 +4,7 @@
   "main": "src/lib.ts",
   "scripts": {
     "build": "bun build ./src/main.ts --outdir ./build --target bun",
-    "check:types": "bunx --bun tsc --noEmit",
+    "check:types": "tsc --noEmit",
     "dev": "bun --watch src/main.ts",
     "db:generate": "bunx --bun drizzle-kit generate --config drizzle.config.mts",
     "test": "NODE_ENV=test bun test",
