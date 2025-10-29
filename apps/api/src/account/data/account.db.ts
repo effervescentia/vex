@@ -1,3 +1,4 @@
+import { AuthCredentialDB } from '@api/auth/data/auth-credential.db';
 import { PostDB } from '@api/post/data/post.db';
 import { PostBoostDB } from '@api/post/data/post-boost.db';
 import { id, timestamps } from '@bltx/db';
@@ -12,6 +13,7 @@ export const AccountDB = pgTable('account', {
 });
 
 export const AccountRelations = relations(AccountDB, ({ many }) => ({
+  credentials: many(AuthCredentialDB),
   aliases: many(AccountAliasDB),
   posts: many(PostDB),
   boosts: many(PostBoostDB),
