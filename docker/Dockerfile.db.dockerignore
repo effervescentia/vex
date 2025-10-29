@@ -1,0 +1,6 @@
+**/*
+!package.json
+!bun.lock
+!*/*/package.json
+!*/*/drizzle.config.mts
+!*/*/drizzle/**

@@ -28,11 +28,19 @@ route:
 tls:
   namespace: traefik
 
+web:
+  origin: https://app.vex.localhost:1337
+
 postgres:
   hostname: db-postgres
   port: 5432
   database: vex
   username: vex
+
+redis:
+  hostname: db-redis-master
+  port: 6379
+  username: default
 
 account:
   alias:
