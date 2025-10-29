@@ -1,7 +1,10 @@
-export type { AccountDetails } from '@api/account/data/account-details.dto';
-export type { PostWithContent } from '@api/post/data/post-with-content.dto';
-export type { PostBoost } from '@api/post/data/post-boost.dto';
-export type { AccountAlias } from '@api/account/data/account-alias.dto';
+export type { AuthSession } from '@api/auth/data/auth-session.dto';
 export type { Account } from '@api/account/data/account.dto';
+export type { AccountAlias } from '@api/account/data/account-alias.dto';
+export type { AccountDetails } from '@api/account/data/account-details.dto';
+export type { AuthCredential } from '@api/auth/data/auth-credential.dto';
+export { AuthTransport } from '@api/auth/data/auth-transport.enum';
 export type { TextContent } from '@api/content/data/text-content.dto';
 export type { Post } from '@api/post/data/post.dto';
+export type { PostBoost } from '@api/post/data/post-boost.dto';
+export type { PostWithContent } from '@api/post/data/post-with-content.dto';
