@@ -1,6 +1,6 @@
 import { AuthCredentialDB } from '@api/auth/data/auth-credential.db';
-import { PostDB } from '@api/post/data/post.db';
-import { PostBoostDB } from '@api/post/data/post-boost.db';
+import { PostDB } from '@api/memo/data/post.db';
+import { PostBoostDB } from '@api/memo/data/post-boost.db';
 import { id, timestamps } from '@bltx/db';
 import { relations } from 'drizzle-orm';
 import { pgTable, text } from 'drizzle-orm/pg-core';

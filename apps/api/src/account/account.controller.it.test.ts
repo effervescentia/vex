@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import type { Environment } from '@api/app/app.env';
 import { PostDB } from '@api/db/db.schema';
 import type { AccountAlias } from '@api/lib';
-import { PostService } from '@api/post/post.service';
+import { PostService } from '@api/memo/post.service';
 import { insertOne } from '@bltx/db';
 import { MockRequest, type Serialized, serialize } from '@bltx/test';
 import { setupIntegrationTest } from '@test/setup.util';
