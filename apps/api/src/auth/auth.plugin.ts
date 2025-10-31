@@ -1,15 +1,11 @@
 import type { Account } from '@api/account/data/account.dto';
+import { UnauthorizedError } from '@api/app/app.error';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import { eq } from 'drizzle-orm';
 import Elysia, { t } from 'elysia';
 import { AuthSessionService } from './auth-session.service';
 import { AuthSessionDB } from './data/auth-session.db';
-
-export class UnauthorizedError extends Error {
-  code = 401;
-  status = 'UNAUTHORIZED';
-}
 
 export const AuthPlugin = new Elysia({ name: 'plugin.auth' })
   .guard({ as: 'scoped', cookie: t.Cookie({ accessToken: t.Optional(t.String()) }) })
