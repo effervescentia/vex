@@ -12,7 +12,7 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 
 describe('PostController', () => {
-  describe.skip('GET /post', () => {
+  describe('GET /post', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
     const request = (accountID: string): Promise<Serialized<PostWithContent[]>> =>

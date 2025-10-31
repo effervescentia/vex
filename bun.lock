@@ -30,7 +30,7 @@
         "parse-duration": "2.1.4",
       },
       "devDependencies": {
-        "@bltx/test": "1.5.1",
+        "@bltx/test": "^1.6.0",
         "@electric-sql/pglite": "0.3.5",
         "@types/pg": "8.15.5",
         "drizzle-kit": "0.31.4",
@@ -158,7 +158,7 @@
 
     "@bltx/plop": ["@bltx/plop@1.5.0", "", { "dependencies": { "change-case": "5.4.4", "fast-glob": "3.3.3", "ts-pattern": "5.8.0" }, "peerDependencies": { "plop": "^4" } }, "sha512-h/wDiR5oF1n2vCI6Yms2Mf/6sccBYR21UzO/ZpD87gHdI2ie9ocKuLOEwDzpxiGJAsFkEa5JgnbYd2VkuB/qGQ=="],
 
-    "@bltx/test": ["@bltx/test@1.5.1", "", { "peerDependencies": { "@bltx/core": "1.6.0", "@bltx/db": "1.6.6", "drizzle-orm": "^0.44", "elysia": "^1" } }, "sha512-FLn6DJ30DoDGkP0HlhEfiqR8S5m64uhk/PVs6QG9q12PdezAXxuH5zWAMfq1GmyaooW+whFHm1XpqW4NAnWfNQ=="],
+    "@bltx/test": ["@bltx/test@1.6.0", "", { "peerDependencies": { "@bltx/core": "1.6.0", "@bltx/db": "1.6.6", "drizzle-orm": "^0.44", "elysia": "^1" } }, "sha512-TuxA5YBOFdtsJXWgmcOjNXRkWMrR28QOwu3YC8HKNRzs/8kn0gkbJD3nmnCwIoggewMbKXB/yUo4axupb9vq9A=="],
 
     "@bltx/web": ["@bltx/web@1.1.2", "", { "peerDependencies": { "@elysiajs/eden": "^1", "@vanilla-extract/css": "^1", "jotai": "^2", "rainbow-sprinkles": "^1", "react": "^19" } }, "sha512-IQYnIfxR62TJwr2QGsrcVGjTO1Ie6Emjn/i/bpTi5H18ZXTA43UAJ8o3CsW2OuKHAdmBECW/qlFGpKEA5Eozfg=="],
 
