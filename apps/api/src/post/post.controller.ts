@@ -1,4 +1,6 @@
+import { AuthPlugin } from '@api/auth/auth.plugin';
 import { DatabasePlugin } from '@api/db/db.plugin';
+import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import Elysia, { t } from 'elysia';
 import { CreateTextPostRequest } from './data/create-text-post.req';
 import { PatchTextPostRequest } from './data/patch-text-post.req';
@@ -9,7 +11,20 @@ const PostParams = t.Object({ postID: t.String({ format: 'uuid' }) });
 
 export const PostController = new Elysia({ prefix: '/post' })
   .use(DatabasePlugin)
+  .use(EnvironmentPlugin)
+  .use(AuthPlugin)
   .derive({ as: 'scoped' }, ({ db }) => ({ service: new PostService(db()) }))
+
+  .get(
+    '/',
+    async ({ service, principal }) => {
+      return service.findWithContent(principal.id);
+    },
+    {
+      authenticated: true,
+      response: t.Array(PostWithContentDTO),
+    },
+  )
 
   .post(
     '/text',
