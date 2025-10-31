@@ -15,16 +15,16 @@ describe('PostController', () => {
   describe('POST /post/text', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
-    const request = (body: CreateTextPost): Promise<Serialized<PostWithContent>> =>
+    const request = (accountID: string, body: CreateTextPost): Promise<Serialized<PostWithContent>> =>
       app()
-        .handle(new MockRequest('/post/text', { method: 'post', json: body }))
+        .handle(new MockRequest('/post/text', { method: 'post', json: body, headers: { 'test-principal': accountID } }))
         .then((res) => res.json());
 
     test('create text post', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const data: CreateTextPost = { authorID: account.id, geolocation: [0, 0], content: 'my first post' };
+      const data: CreateTextPost = { geolocation: [0, 0], content: 'my first post' };
 
-      const result = await request(data);
+      const result = await request(account.id, data);
 
       expect(result).toEqual(
         expect.objectContaining({
@@ -57,8 +57,7 @@ describe('PostController', () => {
 
     test('patch text post', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const post = await new PostService(db()).createText({
-        authorID: account.id,
+      const post = await new PostService(db()).createText(account.id, {
         geolocation: [0, 0],
         content: 'my first post',
       });
@@ -95,8 +94,7 @@ describe('PostController', () => {
     test('get text post', async () => {
       const account = await insertOne(db(), AccountDB, {});
       const content = 'my first post';
-      const post = await new PostService(db()).createText({
-        authorID: account.id,
+      const post = await new PostService(db()).createText(account.id, {
         geolocation: [0, 0],
         content,
       });
@@ -114,8 +112,7 @@ describe('PostController', () => {
 
     test('delete text post', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const post = await new PostService(db()).createText({
-        authorID: account.id,
+      const post = await new PostService(db()).createText(account.id, {
         geolocation: [0, 0],
         content: 'my first post',
       });

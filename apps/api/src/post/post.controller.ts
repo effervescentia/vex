@@ -28,10 +28,11 @@ export const PostController = new Elysia({ prefix: '/post' })
 
   .post(
     '/text',
-    async ({ service, body }) => {
-      return service.createText(body);
+    async ({ service, body, principal }) => {
+      return service.createText(principal.id, body);
     },
     {
+      authenticated: true,
       body: CreateTextPostRequest,
       response: PostWithContentDTO,
     },

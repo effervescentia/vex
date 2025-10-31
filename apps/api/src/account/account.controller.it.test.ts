@@ -152,7 +152,7 @@ describe('AccountController', () => {
 
     test('delete account', async () => {
       const account = await new AccountService(db(), ENVIRONMENT).create({ description: 'entrepreneur' });
-      await new PostService(db()).createText({ authorID: account.id, geolocation: [0, 0], content: 'my post' });
+      await new PostService(db()).createText(account.id, { geolocation: [0, 0], content: 'my post' });
 
       await request(account.id);
 

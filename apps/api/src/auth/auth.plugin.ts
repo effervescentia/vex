@@ -11,22 +11,31 @@ export const AuthPlugin = new Elysia({ name: 'plugin.auth' })
   .guard({ as: 'scoped', cookie: t.Cookie({ accessToken: t.Optional(t.String()) }) })
   .macro({
     authenticated: {
-      resolve: async ({ cookie: { accessToken } }) => {
+      resolve: async ({ headers, cookie: { accessToken } }) => {
         if (import.meta.env.NODE_ENV === 'test') {
-          return { principal: { id: 'test' } as Account };
+          if (!headers['test-principal']) throw new UnauthorizedError();
+
+          return {
+            principal: { id: headers['test-principal'] } as Account,
+          };
         }
+
         const sessionService = new AuthSessionService(DatabasePlugin.decorator.db(), EnvironmentPlugin.decorator.env());
         try {
           if (typeof accessToken.value !== 'string') throw new UnauthorizedError();
+
           const tokenData = await sessionService.accessToken.verify(accessToken.value);
           if (!tokenData) throw new UnauthorizedError();
+
           const session = await DatabasePlugin.decorator.db().query.AuthSessionDB.findFirst({
             where: eq(AuthSessionDB.id, tokenData.sessionID),
             with: { credential: { with: { account: true }, columns: {} } },
             columns: {},
           });
           if (!session) throw new UnauthorizedError();
+
           accessToken.value = await sessionService.accessToken.sign({ sessionID: tokenData.sessionID });
+
           return { principal: session.credential.account };
         } catch (err) {
           accessToken?.remove();
