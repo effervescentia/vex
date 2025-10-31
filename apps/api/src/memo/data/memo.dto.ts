@@ -1,5 +1,5 @@
 import { type Static, t } from 'elysia';
-import { PostVisibility } from './post-visibility.enum';
+import { PostVisibility } from './memo-visibility.enum';
 
 export type Post = Static<typeof PostDTO>;
 

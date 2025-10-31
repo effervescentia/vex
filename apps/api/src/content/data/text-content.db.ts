@@ -1,4 +1,4 @@
-import { PostDB } from '@api/memo/data/post.db';
+import { PostDB } from '@api/memo/data/memo.db';
 import { timestamps, uuidV7 } from '@bltx/db';
 import { relations } from 'drizzle-orm';
 import { index, pgTable, text } from 'drizzle-orm/pg-core';

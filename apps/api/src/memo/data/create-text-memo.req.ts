@@ -1,6 +1,6 @@
 import { TextContentDTO } from '@api/content/data/text-content.dto';
 import { type Static, t } from 'elysia';
-import { PostDTO } from './post.dto';
+import { PostDTO } from './memo.dto';
 
 export type CreateTextPost = Static<typeof CreateTextPostRequest>;
 

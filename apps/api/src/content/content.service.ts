@@ -1,5 +1,5 @@
 import { DataService } from '@api/global/data.service';
-import type { PatchTextPost } from '@api/memo/data/patch-text-post.req';
+import type { PatchTextPost } from '@api/memo/data/patch-text-memo.req';
 import { insertOne, updateOne } from '@bltx/db';
 import { eq, type InferInsertModel } from 'drizzle-orm';
 import { TextContentDB } from './data/text-content.db';

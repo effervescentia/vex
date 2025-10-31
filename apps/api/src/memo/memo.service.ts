@@ -4,10 +4,10 @@ import { DataService } from '@api/global/data.service';
 import { insertOne } from '@bltx/db';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { InternalServerError } from 'elysia';
-import type { CreateTextPost } from './data/create-text-post.req';
-import type { PatchTextPost } from './data/patch-text-post.req';
-import { PostDB } from './data/post.db';
-import type { PostWithContent } from './data/post-with-content.dto';
+import type { CreateTextPost } from './data/create-text-memo.req';
+import { PostDB } from './data/memo.db';
+import type { PostWithContent } from './data/memo-with-content.dto';
+import type { PatchTextPost } from './data/patch-text-memo.req';
 
 export class PostService extends DataService {
   private async unsafeGetWithContent(postID: string) {

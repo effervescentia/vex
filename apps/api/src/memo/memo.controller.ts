@@ -2,10 +2,10 @@ import { AuthPlugin } from '@api/auth/auth.plugin';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import Elysia, { NotFoundError, t } from 'elysia';
-import { CreateTextPostRequest } from './data/create-text-post.req';
-import { PatchTextPostRequest } from './data/patch-text-post.req';
-import { PostWithContentDTO } from './data/post-with-content.dto';
-import { PostService } from './post.service';
+import { CreateTextPostRequest } from './data/create-text-memo.req';
+import { PostWithContentDTO } from './data/memo-with-content.dto';
+import { PatchTextPostRequest } from './data/patch-text-memo.req';
+import { PostService } from './memo.service';
 
 const PostParams = t.Object({ postID: t.String({ format: 'uuid' }) });
 

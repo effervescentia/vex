@@ -2,7 +2,7 @@ import { AccountDB } from '@api/account/data/account.db';
 import { createdTimestamp, uuidV7 } from '@bltx/db';
 import { relations } from 'drizzle-orm';
 import { index, pgTable, primaryKey } from 'drizzle-orm/pg-core';
-import { PostDB } from './post.db';
+import { PostDB } from './memo.db';
 
 export const PostBoostDB = pgTable(
   'post_boost',

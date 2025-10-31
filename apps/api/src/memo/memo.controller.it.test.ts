@@ -5,13 +5,13 @@ import { insertOne } from '@bltx/db';
 import { MockRequest, type Serialized, serialize } from '@bltx/test';
 import { setupIntegrationTest } from '@test/setup.util';
 import { eq } from 'drizzle-orm';
-import type { CreateTextPost } from './data/create-text-post.req';
-import type { PatchTextPost } from './data/patch-text-post.req';
-import { PostVisibility } from './data/post-visibility.enum';
-import { PostController } from './post.controller';
-import { PostService } from './post.service';
+import type { CreateTextPost } from './data/create-text-memo.req';
+import { PostVisibility } from './data/memo-visibility.enum';
+import type { PatchTextPost } from './data/patch-text-memo.req';
+import { PostController } from './memo.controller';
+import { PostService } from './memo.service';
 
-describe('PostController', () => {
+describe('MemoController', () => {
   describe('GET /post', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
