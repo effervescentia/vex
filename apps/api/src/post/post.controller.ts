@@ -1,3 +1,4 @@
+import { AuthPlugin } from '@api/auth/auth.plugin';
 import { AuthSessionService } from '@api/auth/auth-session.service';
 import { AuthSessionDB } from '@api/auth/data/auth-session.db';
 import { DatabasePlugin } from '@api/db/db.plugin';
@@ -19,7 +20,7 @@ const PostParams = t.Object({ postID: t.String({ format: 'uuid' }) });
 export const PostController = new Elysia({ prefix: '/post' })
   .use(DatabasePlugin)
   .use(EnvironmentPlugin)
-  .guard({ as: 'scoped', cookie: t.Cookie({ accessToken: t.Optional(t.String()) }) })
+  .use(AuthPlugin)
   .macro({
     authenticated: {
       resolve: async ({ db, env, cookie: { accessToken } }) => {
