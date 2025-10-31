@@ -9,14 +9,14 @@ export const { RouteProvider, useRoute, routes } = createRouter({
 
   login: defineRoute('/login'),
 
-  ownPosts: defineRoute('/posts'),
+  ownMemos: defineRoute('/memos'),
 
-  newPost: defineRoute('/post/new'),
+  newMemo: defineRoute('/memo/new'),
 
-  postDetails: defineRoute(
+  memoDetails: defineRoute(
     {
-      postID: param.path.string,
+      memoID: param.path.string,
     },
-    (p) => `/post/${p.postID}`,
+    (p) => `/memo/${p.memoID}`,
   ),
 });

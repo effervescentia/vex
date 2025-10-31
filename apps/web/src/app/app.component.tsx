@@ -1,9 +1,9 @@
 import { Fingerprint } from '@web/pages/fingerprint/fingerprint.page';
 import { Home } from '@web/pages/home/home.page';
 import { Login } from '@web/pages/login/login.page';
-import { NewPost } from '@web/pages/post/new-post/new-post.page';
-import { OwnPosts } from '@web/pages/post/own-posts/own-posts.page';
-import { PostDetails } from '@web/pages/post/post-details/post-details.page';
+import { MemoDetails } from '@web/pages/memo/memo-details/memo-details.page';
+import { NewMemo } from '@web/pages/memo/new-memo/new-memo.page';
+import { OwnMemos } from '@web/pages/memo/own-memos/own-memos.page';
 import { Signup } from '@web/pages/signup/signup.page';
 import { themeClass } from '@web/styles/theme.css';
 import { match } from 'ts-pattern';
@@ -33,18 +33,18 @@ export const App: React.FC = () => {
     )
 
     .with(
-      { name: 'ownPosts' },
-      secure(() => <OwnPosts />),
+      { name: 'ownMemos' },
+      secure(() => <OwnMemos />),
     )
 
     .with(
-      { name: 'newPost' },
-      secure(() => <NewPost />),
+      { name: 'newMemo' },
+      secure(() => <NewMemo />),
     )
 
     .with(
-      { name: 'postDetails' },
-      secure(({ params }) => <PostDetails postID={params.postID} />),
+      { name: 'memoDetails' },
+      secure(({ params }) => <MemoDetails memoID={params.memoID} />),
     )
 
     .otherwise(() => null);
