@@ -1,7 +1,7 @@
 import { resources } from '@bltx/web';
 import { client } from '@web/client';
 
-const usePosts = resources(() => client().post.get());
+const usePosts = resources(() => client().post.get({ headers: {}, query: {} }));
 
 export const Posts: React.FC = () => {
   const posts = usePosts();
