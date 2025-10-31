@@ -17,6 +17,13 @@ export class PostService extends DataService {
     return post;
   }
 
+  async findWithContent(authorID: string): Promise<PostWithContent[]> {
+    return this.db.query.PostDB.findMany({
+      where: eq(PostDB.authorID, authorID),
+      with: { text: { columns: { postID: false } } },
+    });
+  }
+
   async getWithContent(postID: string): Promise<PostWithContent | undefined> {
     return this.db.query.PostDB.findFirst({
       where: and(eq(PostDB.id, postID), isNull(PostDB.deletedAt)),
