@@ -31,9 +31,9 @@ export class PostService extends DataService {
     });
   }
 
-  async createText(data: CreateTextPost) {
+  async createText(authorID: string, data: CreateTextPost) {
     const postID = await this.transaction(async (tx) => {
-      const post = await insertOne(tx, PostDB, data);
+      const post = await insertOne(tx, PostDB, { ...data, authorID });
 
       await new ContentService(tx).createText({ postID: post.id, content: data.content });
 
