@@ -29,11 +29,9 @@ export const AuthPlugin = new Elysia({ name: 'plugin.auth' })
 
         const sessionService = new AuthSessionService(DatabasePlugin.decorator.db(), EnvironmentPlugin.decorator.env());
         try {
-          console.log(accessToken.value);
           if (typeof accessToken.value !== 'string') return status(401);
 
           const tokenData = await sessionService.accessToken.verify(accessToken.value);
-          console.log({ tokenData });
           if (!tokenData) return status(401);
 
           const session = await DatabasePlugin.decorator.db().query.AuthSessionDB.findFirst({

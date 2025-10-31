@@ -9,7 +9,11 @@ import { AuthSessionDB } from './data/auth-session.db';
 const AccessToken = t.Object({ sessionID: t.Number() });
 
 export class AuthSessionService extends DataService {
-  public readonly accessToken: ReturnType<typeof jwt<'jwt', typeof AccessToken>>['decorator']['jwt'];
+  private static createAccessToken(secret: string) {
+    return jwt({ secret, schema: AccessToken, exp: '10m' }).decorator.jwt;
+  }
+
+  public readonly accessToken: ReturnType<typeof AuthSessionService.createAccessToken>;
 
   constructor(db: DB, env: Environment) {
     super(db);
