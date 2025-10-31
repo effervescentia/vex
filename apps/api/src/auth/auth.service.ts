@@ -111,15 +111,4 @@ export class AuthService extends DataService {
 
     return { account, session: session! };
   }
-
-  async getSession(sessionID: number) {
-    return this.db.query.AuthSessionDB.findFirst({
-      where: eq(AuthSessionDB.id, sessionID),
-      with: { credential: true },
-    });
-  }
-
-  async deleteSession(sessionID: number) {
-    await this.db.delete(AuthSessionDB).where(eq(AuthSessionDB.id, sessionID));
-  }
 }
