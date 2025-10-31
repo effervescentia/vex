@@ -7,11 +7,6 @@ import { PatchTextPostRequest } from './data/patch-text-post.req';
 import { PostWithContentDTO } from './data/post-with-content.dto';
 import { PostService } from './post.service';
 
-export class UnauthorizedError extends Error {
-  code = 401;
-  status = 'UNAUTHORIZED';
-}
-
 const PostParams = t.Object({ postID: t.String({ format: 'uuid' }) });
 
 export const PostController = new Elysia({ prefix: '/post' })
