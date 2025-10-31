@@ -12,6 +12,27 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 
 describe('PostController', () => {
+  describe('GET /post', () => {
+    const { app, db } = setupIntegrationTest(PostController);
+
+    const request = (accountID: string): Promise<Serialized<PostWithContent[]>> =>
+      app()
+        .handle(new MockRequest('/post', { method: 'get', headers: { 'test-principal': accountID } }))
+        .then((res) => res.json());
+
+    test('find own posts', async () => {
+      const account = await insertOne(db(), AccountDB, {});
+      const post = await new PostService(db()).createText(account.id, {
+        geolocation: [0, 0],
+        content: 'my first post',
+      });
+
+      const result = await request(account.id);
+
+      expect(result).toEqual(serialize([post]));
+    });
+  });
+
   describe('POST /post/text', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
@@ -93,10 +114,9 @@ describe('PostController', () => {
 
     test('get text post', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const content = 'my first post';
       const post = await new PostService(db()).createText(account.id, {
         geolocation: [0, 0],
-        content,
+        content: 'my first post',
       });
 
       const result = await request(post.id);
