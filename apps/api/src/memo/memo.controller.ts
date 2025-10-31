@@ -2,18 +2,18 @@ import { AuthPlugin } from '@api/auth/auth.plugin';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import Elysia, { NotFoundError, t } from 'elysia';
-import { CreateTextPostRequest } from './data/create-text-memo.req';
-import { PostWithContentDTO } from './data/memo-with-content.dto';
-import { PatchTextPostRequest } from './data/patch-text-memo.req';
-import { PostService } from './memo.service';
+import { CreateTextMemoRequest } from './data/create-text-memo.req';
+import { MemoWithContentDTO } from './data/memo-with-content.dto';
+import { PatchTextMemoRequest } from './data/patch-text-memo.req';
+import { MemoService } from './memo.service';
 
-const PostParams = t.Object({ postID: t.String({ format: 'uuid' }) });
+const MemoParams = t.Object({ memoID: t.String({ format: 'uuid' }) });
 
-export const PostController = new Elysia({ prefix: '/post' })
+export const MemoController = new Elysia({ prefix: '/memo' })
   .use(DatabasePlugin)
   .use(EnvironmentPlugin)
   .use(AuthPlugin)
-  .derive({ as: 'scoped' }, ({ db }) => ({ service: new PostService(db()) }))
+  .derive({ as: 'scoped' }, ({ db }) => ({ service: new MemoService(db()) }))
 
   .get(
     '/',
@@ -22,7 +22,7 @@ export const PostController = new Elysia({ prefix: '/post' })
     },
     {
       authenticated: true,
-      response: t.Array(PostWithContentDTO),
+      response: t.Array(MemoWithContentDTO),
     },
   )
 
@@ -33,44 +33,44 @@ export const PostController = new Elysia({ prefix: '/post' })
     },
     {
       authenticated: true,
-      body: CreateTextPostRequest,
-      response: PostWithContentDTO,
+      body: CreateTextMemoRequest,
+      response: MemoWithContentDTO,
     },
   )
 
   .patch(
-    '/text/:postID',
+    '/text/:memoID',
     async ({ service, params, body }) => {
-      return service.patchText(params.postID, body);
+      return service.patchText(params.memoID, body);
     },
     {
-      params: PostParams,
-      body: PatchTextPostRequest,
-      response: PostWithContentDTO,
+      params: MemoParams,
+      body: PatchTextMemoRequest,
+      response: MemoWithContentDTO,
     },
   )
 
   .get(
-    '/details/:postID',
+    '/details/:memoID',
     async ({ service, params, principal }) => {
-      const post = await service.getWithContent(params.postID);
-      if (!post || post.authorID !== principal.id) throw new NotFoundError(`No Post exists with ID '${params.postID}'`);
+      const memo = await service.getWithContent(params.memoID);
+      if (!memo || memo.authorID !== principal.id) throw new NotFoundError(`No Memo exists with ID '${params.memoID}'`);
 
-      return post;
+      return memo;
     },
     {
       authenticated: true,
-      params: PostParams,
-      response: PostWithContentDTO,
+      params: MemoParams,
+      response: MemoWithContentDTO,
     },
   )
 
   .delete(
-    '/:postID',
+    '/:memoID',
     async ({ service, params }) => {
-      await service.delete(params.postID);
+      await service.delete(params.memoID);
     },
     {
-      params: PostParams,
+      params: MemoParams,
     },
   );

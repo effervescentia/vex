@@ -1,12 +1,12 @@
 import { TextContentDTO } from '@api/content/data/text-content.dto';
 import { type Static, t } from 'elysia';
-import { PostDTO } from './memo.dto';
+import { MemoDTO } from './memo.dto';
 
-export type PostWithContent = Static<typeof PostWithContentDTO>;
+export type MemoWithContent = Static<typeof MemoWithContentDTO>;
 
-export const PostWithContentDTO = t.Composite([
-  PostDTO,
+export const MemoWithContentDTO = t.Composite([
+  MemoDTO,
   t.Object({
-    text: t.Nullable(t.Omit(TextContentDTO, ['postID'])),
+    text: t.Nullable(t.Omit(TextContentDTO, ['memoID'])),
   }),
 ]);

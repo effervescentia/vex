@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import type { Environment } from '@api/app/app.env';
-import { PostDB } from '@api/db/db.schema';
+import { MemoDB } from '@api/db/db.schema';
 import type { AccountAlias } from '@api/lib';
-import { PostService } from '@api/memo/memo.service';
+import { MemoService } from '@api/memo/memo.service';
 import { insertOne } from '@bltx/db';
 import { MockRequest, type Serialized, serialize } from '@bltx/test';
 import { setupIntegrationTest } from '@test/setup.util';
@@ -152,13 +152,13 @@ describe('AccountController', () => {
 
     test('delete account', async () => {
       const account = await new AccountService(db(), ENVIRONMENT).create({ description: 'entrepreneur' });
-      await new PostService(db()).createText(account.id, { geolocation: [0, 0], content: 'my post' });
+      await new MemoService(db()).createText(account.id, { geolocation: [0, 0], content: 'my memo' });
 
       await request(account.id);
 
       expect(await db().$count(AccountDB, eq(AccountDB.id, account.id))).toBe(0);
       expect(await db().$count(AccountAliasDB, eq(AccountAliasDB.accountID, account.id))).toBe(0);
-      expect(await db().$count(PostDB, eq(PostDB.authorID, account.id))).toBe(0);
+      expect(await db().$count(MemoDB, eq(MemoDB.authorID, account.id))).toBe(0);
     });
   });
 });

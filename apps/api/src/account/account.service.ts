@@ -54,7 +54,7 @@ export class AccountService extends DataService {
   }
 
   async delete(accountID: string) {
-    // TODO: delete content of each post explicitly
+    // TODO: delete content of each memo explicitly
     await this.db.delete(AccountDB).where(eq(AccountDB.id, accountID));
   }
 }

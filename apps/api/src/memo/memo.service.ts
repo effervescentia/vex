@@ -4,63 +4,63 @@ import { DataService } from '@api/global/data.service';
 import { insertOne } from '@bltx/db';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { InternalServerError } from 'elysia';
-import type { CreateTextPost } from './data/create-text-memo.req';
-import { PostDB } from './data/memo.db';
-import type { PostWithContent } from './data/memo-with-content.dto';
-import type { PatchTextPost } from './data/patch-text-memo.req';
+import type { CreateTextMemo } from './data/create-text-memo.req';
+import { MemoDB } from './data/memo.db';
+import type { MemoWithContent } from './data/memo-with-content.dto';
+import type { PatchTextMemo } from './data/patch-text-memo.req';
 
-export class PostService extends DataService {
-  private async unsafeGetWithContent(postID: string) {
-    const post = await this.getWithContent(postID);
-    if (!post) throw new InternalServerError(`No Post exists with ID '${postID}'`);
+export class MemoService extends DataService {
+  private async unsafeGetWithContent(memoID: string) {
+    const memo = await this.getWithContent(memoID);
+    if (!memo) throw new InternalServerError(`No Memo exists with ID '${memoID}'`);
 
-    return post;
+    return memo;
   }
 
-  async findWithContent(authorID: string): Promise<PostWithContent[]> {
-    return this.db.query.PostDB.findMany({
-      where: eq(PostDB.authorID, authorID),
-      with: { text: { columns: { postID: false } } },
-      orderBy: desc(PostDB.createdAt),
+  async findWithContent(authorID: string): Promise<MemoWithContent[]> {
+    return this.db.query.MemoDB.findMany({
+      where: eq(MemoDB.authorID, authorID),
+      with: { text: { columns: { memoID: false } } },
+      orderBy: desc(MemoDB.createdAt),
     });
   }
 
-  async getWithContent(postID: string): Promise<PostWithContent | undefined> {
-    return this.db.query.PostDB.findFirst({
-      where: and(eq(PostDB.id, postID), isNull(PostDB.deletedAt)),
-      with: { text: { columns: { postID: false } } },
+  async getWithContent(memoID: string): Promise<MemoWithContent | undefined> {
+    return this.db.query.MemoDB.findFirst({
+      where: and(eq(MemoDB.id, memoID), isNull(MemoDB.deletedAt)),
+      with: { text: { columns: { memoID: false } } },
     });
   }
 
-  async createText(authorID: string, data: CreateTextPost) {
-    const postID = await this.transaction(async (tx) => {
-      const post = await insertOne(tx, PostDB, { ...data, authorID });
+  async createText(authorID: string, data: CreateTextMemo) {
+    const memoID = await this.transaction(async (tx) => {
+      const memo = await insertOne(tx, MemoDB, { ...data, authorID });
 
-      await new ContentService(tx).createText({ postID: post.id, content: data.content });
+      await new ContentService(tx).createText({ memoID: memo.id, content: data.content });
 
-      return post.id;
+      return memo.id;
     });
 
-    return this.unsafeGetWithContent(postID);
+    return this.unsafeGetWithContent(memoID);
   }
 
-  async patchText(postID: string, data: PatchTextPost) {
-    await new ContentService(this.db).patchText(postID, data);
+  async patchText(memoID: string, data: PatchTextMemo) {
+    await new ContentService(this.db).patchText(memoID, data);
 
-    return this.unsafeGetWithContent(postID);
+    return this.unsafeGetWithContent(memoID);
   }
 
-  async delete(postID: string) {
-    const postWithContent = await this.getWithContent(postID);
-    if (!postWithContent) return;
+  async delete(memoID: string) {
+    const memoWithContent = await this.getWithContent(memoID);
+    if (!memoWithContent) return;
 
-    if (postWithContent.text) {
+    if (memoWithContent.text) {
       // text content has no deletion side effect
     }
 
     await this.transaction(async (tx) => {
-      await tx.delete(PostDB).where(eq(PostDB.id, postID));
-      await tx.delete(TextContentDB).where(eq(TextContentDB.postID, postID));
+      await tx.delete(MemoDB).where(eq(MemoDB.id, memoID));
+      await tx.delete(TextContentDB).where(eq(TextContentDB.memoID, memoID));
     });
   }
 }

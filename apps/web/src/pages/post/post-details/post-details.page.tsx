@@ -2,7 +2,7 @@ import { resource } from '@bltx/web';
 import { AppNavigation } from '@web/app/app.navigation';
 import { client } from '@web/client';
 
-const usePost = resource((postID) => client().post.details({ postID }).get());
+const usePost = resource((memoID) => client().memo.details({ memoID }).get());
 
 export interface PostDetailsProps {
   postID: string;

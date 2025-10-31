@@ -3,7 +3,7 @@ import { AppNavigation } from '@web/app/app.navigation';
 import { routes } from '@web/app/app.router';
 import { client } from '@web/client';
 
-const usePosts = resources(() => client().post.get());
+const usePosts = resources(() => client().memo.get());
 
 export const OwnPosts: React.FC = () => {
   const posts = usePosts();

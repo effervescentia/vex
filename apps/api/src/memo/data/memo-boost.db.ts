@@ -2,23 +2,23 @@ import { AccountDB } from '@api/account/data/account.db';
 import { createdTimestamp, uuidV7 } from '@bltx/db';
 import { relations } from 'drizzle-orm';
 import { index, pgTable, primaryKey } from 'drizzle-orm/pg-core';
-import { PostDB } from './memo.db';
+import { MemoDB } from './memo.db';
 
-export const PostBoostDB = pgTable(
-  'post_boost',
+export const MemoBoostDB = pgTable(
+  'memo_boost',
   {
-    postID: uuidV7('post_id')
-      .references(() => PostDB.id, { onDelete: 'cascade' })
+    memoID: uuidV7('memo_id')
+      .references(() => MemoDB.id, { onDelete: 'cascade' })
       .notNull(),
     accountID: uuidV7('account_id')
       .references(() => AccountDB.id, { onDelete: 'cascade' })
       .notNull(),
     ...createdTimestamp,
   },
-  (t) => [primaryKey({ columns: [t.postID, t.accountID] }), index().on(t.postID), index().on(t.accountID)],
+  (t) => [primaryKey({ columns: [t.memoID, t.accountID] }), index().on(t.memoID), index().on(t.accountID)],
 );
 
-export const PostBoostRelations = relations(PostBoostDB, ({ one }) => ({
-  post: one(PostDB, { fields: [PostBoostDB.postID], references: [PostDB.id] }),
-  account: one(AccountDB, { fields: [PostBoostDB.accountID], references: [AccountDB.id] }),
+export const MemoBoostRelations = relations(MemoBoostDB, ({ one }) => ({
+  memo: one(MemoDB, { fields: [MemoBoostDB.memoID], references: [MemoDB.id] }),
+  account: one(AccountDB, { fields: [MemoBoostDB.accountID], references: [AccountDB.id] }),
 }));

@@ -1,12 +1,12 @@
 import { type Static, t } from 'elysia';
-import { PostVisibility } from './memo-visibility.enum';
+import { MemoVisibility } from './memo-visibility.enum';
 
-export type Post = Static<typeof PostDTO>;
+export type Memo = Static<typeof MemoDTO>;
 
-export const PostDTO = t.Object({
+export const MemoDTO = t.Object({
   id: t.String({ format: 'uuid' }),
   authorID: t.String({ format: 'uuid' }),
-  visibility: t.Enum(PostVisibility),
+  visibility: t.Enum(MemoVisibility),
   geolocation: t.Tuple([t.Number(), t.Number()]),
   deletedAt: t.Nullable(t.Date()),
   createdAt: t.Date(),

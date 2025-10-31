@@ -1,5 +1,5 @@
 import { DataService } from '@api/global/data.service';
-import type { PatchTextPost } from '@api/memo/data/patch-text-memo.req';
+import type { PatchTextMemo } from '@api/memo/data/patch-text-memo.req';
 import { insertOne, updateOne } from '@bltx/db';
 import { eq, type InferInsertModel } from 'drizzle-orm';
 import { TextContentDB } from './data/text-content.db';
@@ -9,7 +9,7 @@ export class ContentService extends DataService {
     return insertOne(this.db, TextContentDB, data);
   }
 
-  async patchText(postID: string, data: PatchTextPost) {
-    await updateOne(this.db, TextContentDB, eq(TextContentDB.postID, postID), data);
+  async patchText(memoID: string, data: PatchTextMemo) {
+    await updateOne(this.db, TextContentDB, eq(TextContentDB.memoID, memoID), data);
   }
 }

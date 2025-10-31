@@ -19,7 +19,7 @@ export const NewPost: React.FC = () => {
     );
 
     const post = await client()
-      .post.text.post({
+      .memo.text.post({
         geolocation: [geolocation.coords.longitude, geolocation.coords.latitude],
         content: values.content,
       })

@@ -1,5 +1,5 @@
 import type { Environment } from '@api/app/app.env';
-import { PostDB } from '@api/db/db.schema';
+import { MemoDB } from '@api/db/db.schema';
 import type { DB } from '@api/db/db.types';
 import { DataService } from '@api/global/data.service';
 import { ForbiddenError } from '@api/global/forbidden.error';
@@ -82,10 +82,10 @@ export class AccountAliasService extends DataService {
       let expiry = this.env.ACCOUNT_ALIAS_EXPIRY_LONG;
 
       if (activeAlias) {
-        // count the number of posts made using the active alias
+        // count the number of memos made using the active alias
         const activityCount = await tx.$count(
-          PostDB,
-          and(eq(PostDB.authorID, accountID), gt(PostDB.createdAt, activeAlias.createdAt)),
+          MemoDB,
+          and(eq(MemoDB.authorID, accountID), gt(MemoDB.createdAt, activeAlias.createdAt)),
         );
 
         if (!activityCount) {

@@ -1,49 +1,49 @@
 import { describe, expect, test } from 'bun:test';
-import { AccountDB, PostDB, TextContentDB } from '@api/db/db.schema';
-import type { PostWithContent } from '@api/lib';
+import { AccountDB, MemoDB, TextContentDB } from '@api/db/db.schema';
+import type { MemoWithContent } from '@api/lib';
 import { insertOne } from '@bltx/db';
 import { MockRequest, type Serialized, serialize } from '@bltx/test';
 import { setupIntegrationTest } from '@test/setup.util';
 import { eq } from 'drizzle-orm';
-import type { CreateTextPost } from './data/create-text-memo.req';
-import { PostVisibility } from './data/memo-visibility.enum';
-import type { PatchTextPost } from './data/patch-text-memo.req';
-import { PostController } from './memo.controller';
-import { PostService } from './memo.service';
+import type { CreateTextMemo } from './data/create-text-memo.req';
+import { MemoVisibility } from './data/memo-visibility.enum';
+import type { PatchTextMemo } from './data/patch-text-memo.req';
+import { MemoController } from './memo.controller';
+import { MemoService } from './memo.service';
 
 describe('MemoController', () => {
-  describe('GET /post', () => {
-    const { app, db } = setupIntegrationTest(PostController);
+  describe('GET /memo', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (accountID: string): Promise<Serialized<PostWithContent[]>> =>
+    const request = (accountID: string): Promise<Serialized<MemoWithContent[]>> =>
       app()
-        .handle(new MockRequest('/post', { method: 'get', headers: { 'test-principal': accountID } }))
+        .handle(new MockRequest('/memo', { method: 'get', headers: { 'test-principal': accountID } }))
         .then((res) => res.json());
 
-    test('find own posts', async () => {
+    test('find own memos', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const post = await new PostService(db()).createText(account.id, {
+      const memo = await new MemoService(db()).createText(account.id, {
         geolocation: [0, 0],
-        content: 'my first post',
+        content: 'my first memo',
       });
 
       const result = await request(account.id);
 
-      expect(result).toEqual(serialize([post]));
+      expect(result).toEqual(serialize([memo]));
     });
   });
 
-  describe('POST /post/text', () => {
-    const { app, db } = setupIntegrationTest(PostController);
+  describe('POST /memo/text', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (accountID: string, body: CreateTextPost): Promise<Serialized<PostWithContent>> =>
+    const request = (accountID: string, body: CreateTextMemo): Promise<Serialized<MemoWithContent>> =>
       app()
-        .handle(new MockRequest('/post/text', { method: 'post', json: body, headers: { 'test-principal': accountID } }))
+        .handle(new MockRequest('/memo/text', { method: 'post', json: body, headers: { 'test-principal': accountID } }))
         .then((res) => res.json());
 
-    test('create text post', async () => {
+    test('create text memo', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const data: CreateTextPost = { geolocation: [0, 0], content: 'my first post' };
+      const data: CreateTextMemo = { geolocation: [0, 0], content: 'my first memo' };
 
       const result = await request(account.id, data);
 
@@ -52,44 +52,44 @@ describe('MemoController', () => {
           id: expect.any(String),
           authorID: account.id,
           geolocation: data.geolocation,
-          visibility: PostVisibility.PUBLIC,
+          visibility: MemoVisibility.PUBLIC,
           text: expect.objectContaining({ content: data.content }),
         }),
       );
 
       const { text: _, ...resultWithoutText } = result;
-      expect(serialize(await db().query.PostDB.findFirst({ where: eq(PostDB.id, result.id) }))).toEqual(
+      expect(serialize(await db().query.MemoDB.findFirst({ where: eq(MemoDB.id, result.id) }))).toEqual(
         resultWithoutText,
       );
 
       expect(
-        serialize(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.postID, result.id) })),
-      ).toEqual({ ...result.text!, postID: result.id });
+        serialize(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.memoID, result.id) })),
+      ).toEqual({ ...result.text!, memoID: result.id });
     });
   });
 
-  describe('PATCH /post/text/:postID', () => {
-    const { app, db } = setupIntegrationTest(PostController);
+  describe('PATCH /memo/text/:memoID', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (postID: string, body: PatchTextPost): Promise<Serialized<PostWithContent>> =>
+    const request = (memoID: string, body: PatchTextMemo): Promise<Serialized<MemoWithContent>> =>
       app()
-        .handle(new MockRequest(`/post/text/${postID}`, { method: 'patch', json: body }))
+        .handle(new MockRequest(`/memo/text/${memoID}`, { method: 'patch', json: body }))
         .then((res) => res.json());
 
-    test('patch text post', async () => {
+    test('patch text memo', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const post = await new PostService(db()).createText(account.id, {
+      const memo = await new MemoService(db()).createText(account.id, {
         geolocation: [0, 0],
-        content: 'my first post',
+        content: 'my first memo',
       });
-      const data: PatchTextPost = { content: 'my updated text' };
+      const data: PatchTextMemo = { content: 'my updated text' };
 
-      const result = await request(post.id, data);
+      const result = await request(memo.id, data);
 
       expect(result).toEqual(
         expect.objectContaining({
           text: {
-            ...serialize(post.text),
+            ...serialize(memo.text),
             content: data.content,
             updatedAt: expect.any(String),
           },
@@ -98,49 +98,49 @@ describe('MemoController', () => {
 
       expect(new Date(result.updatedAt)).toBeAfter(account.updatedAt);
 
-      expect(serialize(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.postID, post.id) }))).toEqual(
+      expect(serialize(await db().query.TextContentDB.findFirst({ where: eq(TextContentDB.memoID, memo.id) }))).toEqual(
         expect.objectContaining(result.text!),
       );
     });
   });
 
-  describe('GET /post/details/:postID', () => {
-    const { app, db } = setupIntegrationTest(PostController);
+  describe('GET /memo/details/:memoID', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (accountID: string, postID: string): Promise<Serialized<PostWithContent>> =>
+    const request = (accountID: string, memoID: string): Promise<Serialized<MemoWithContent>> =>
       app()
-        .handle(new MockRequest(`/post/details/${postID}`, { method: 'get', headers: { 'test-principal': accountID } }))
+        .handle(new MockRequest(`/memo/details/${memoID}`, { method: 'get', headers: { 'test-principal': accountID } }))
         .then((res) => res.json());
 
-    test('get text post', async () => {
+    test('get text memo', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const post = await new PostService(db()).createText(account.id, {
+      const memo = await new MemoService(db()).createText(account.id, {
         geolocation: [0, 0],
-        content: 'my first post',
+        content: 'my first memo',
       });
 
-      const result = await request(account.id, post.id);
+      const result = await request(account.id, memo.id);
 
-      expect(result).toEqual(serialize(post));
+      expect(result).toEqual(serialize(memo));
     });
   });
 
-  describe('DELETE /post/:postID', () => {
-    const { app, db } = setupIntegrationTest(PostController);
+  describe('DELETE /memo/:memoID', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (postID: string) => app().handle(new MockRequest(`/post/${postID}`, { method: 'delete' }));
+    const request = (memoID: string) => app().handle(new MockRequest(`/memo/${memoID}`, { method: 'delete' }));
 
-    test('delete text post', async () => {
+    test('delete text memo', async () => {
       const account = await insertOne(db(), AccountDB, {});
-      const post = await new PostService(db()).createText(account.id, {
+      const memo = await new MemoService(db()).createText(account.id, {
         geolocation: [0, 0],
-        content: 'my first post',
+        content: 'my first memo',
       });
 
-      await request(post.id);
+      await request(memo.id);
 
-      expect(await db().$count(PostDB, eq(PostDB.id, post.id))).toBe(0);
-      expect(await db().$count(TextContentDB, eq(TextContentDB.postID, post.id))).toBe(0);
+      expect(await db().$count(MemoDB, eq(MemoDB.id, memo.id))).toBe(0);
+      expect(await db().$count(TextContentDB, eq(TextContentDB.memoID, memo.id))).toBe(0);
     });
   });
 });
