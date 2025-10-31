@@ -80,7 +80,7 @@ export const Signup: React.FC = () => {
       <button type="button" onClick={signup}>
         signup
       </button>
-      <a href={routes.login().href}>login</a>
+      <a {...routes.login().link}>login</a>
     </div>
   );
 };

@@ -19,6 +19,7 @@ export const Home: React.FC = () => {
       <button type="button" onClick={logout}>
         logout
       </button>
+      <a {...routes.posts().link}>posts</a>
     </div>
   );
 };

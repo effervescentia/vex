@@ -3,6 +3,7 @@ import { useSetup } from '@web/hooks/use-setup.hook';
 import { Fingerprint } from '@web/pages/fingerprint/fingerprint.page';
 import { Home } from '@web/pages/home/home.page';
 import { Login } from '@web/pages/login/login.page';
+import { Posts } from '@web/pages/posts/posts.page';
 import { Signup } from '@web/pages/signup/signup.page';
 import { themeClass } from '@web/styles/theme.css';
 import { useAtomValue } from 'jotai';
@@ -42,10 +43,6 @@ export const App: React.FC = () => {
   const route = useRoute();
 
   const page = match(route)
-    .with(
-      { name: 'home' },
-      secure(() => <Home />),
-    )
 
     .with({ name: 'fingerprint' }, () => <Fingerprint />)
 
@@ -57,6 +54,16 @@ export const App: React.FC = () => {
     .with(
       { name: 'login' },
       unsecure(() => <Login />),
+    )
+
+    .with(
+      { name: 'home' },
+      secure(() => <Home />),
+    )
+
+    .with(
+      { name: 'posts' },
+      secure(() => <Posts />),
     )
 
     .otherwise(() => null);

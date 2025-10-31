@@ -8,4 +8,6 @@ export const { RouteProvider, useRoute, routes } = createRouter({
   signup: defineRoute('/signup'),
 
   login: defineRoute('/login'),
+
+  posts: defineRoute('/posts'),
 });
