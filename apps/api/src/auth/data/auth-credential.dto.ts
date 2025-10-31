@@ -6,10 +6,10 @@ export type AuthCredential = Static<typeof AuthCredentialDTO>;
 
 export const AuthCredentialDTO = t.Object({
   id: t.String(),
+  accountID: t.String({ format: 'uuid' }),
   publicKey: t.String(),
   algorithm: t.Enum(AuthAlgorithm),
   transports: t.Array(AuthTransportDTO),
-
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });

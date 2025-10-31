@@ -2,10 +2,10 @@ import { AccountService } from '@api/account/account.service';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import { RedisPlugin } from '@api/redis/redis.plugin';
-import jwt from '@elysiajs/jwt';
 import Elysia, { Cookie, type CookieOptions, NotFoundError, t } from 'elysia';
 import { ACCESS_TOKEN_TTL, LOGIN_TTL, SIGNUP_TTL } from './auth.const';
 import { AuthService } from './auth.service';
+import { AuthSessionService } from './auth-session.service';
 import { AuthenticatedResponse } from './data/authenticated.res';
 import { LoginChallengeResponse } from './data/login-challenge.res';
 import { NegotiateLoginRequest } from './data/negotiate-login.req';
@@ -25,25 +25,22 @@ export const AuthController = new Elysia({ prefix: '/auth' })
   .use(DatabasePlugin)
   .use(RedisPlugin)
   .use(EnvironmentPlugin)
-  .use((app) =>
-    jwt({
-      name: 'AccessToken',
-      secret: app.decorator.env().JWT_AUTH_SECRET,
-      schema: t.Object({ sessionID: t.Number() }),
-      exp: '10m',
-    }),
-  )
-  .derive({ as: 'scoped' }, ({ db, redis, env, AccessToken }) => ({
-    service: new AuthService(db(), redis(), env()),
-    accountService: new AccountService(db(), env()),
+  .derive({ as: 'scoped' }, ({ db, redis, env }) => {
+    const sessionService = new AuthSessionService(db(), env());
 
-    refreshAccessToken: async (accessToken: Cookie<string | undefined>, sessionID: number) =>
-      accessToken.set({
-        ...AUTH_COOKIE,
-        value: await AccessToken.sign({ sessionID }),
-        maxAge: ACCESS_TOKEN_TTL * 1000,
-      }),
-  }))
+    return {
+      service: new AuthService(db(), redis(), env()),
+      accountService: new AccountService(db(), env()),
+      sessionService,
+
+      refreshAccessToken: async (accessToken: Cookie<string | undefined>, sessionID: number) =>
+        accessToken.set({
+          ...AUTH_COOKIE,
+          value: await sessionService.accessToken.sign({ sessionID }),
+          maxAge: ACCESS_TOKEN_TTL * 1000,
+        }),
+    };
+  })
 
   .post(
     '/signup/negotiate',
@@ -144,11 +141,11 @@ export const AuthController = new Elysia({ prefix: '/auth' })
 
   .get(
     '/session',
-    async ({ service, accountService, cookie: { accessToken }, AccessToken, refreshAccessToken }) => {
-      const tokenData = await AccessToken.verify(accessToken.value);
+    async ({ accountService, sessionService, cookie: { accessToken }, refreshAccessToken }) => {
+      const tokenData = await sessionService.accessToken.verify(accessToken.value);
       if (!tokenData) throw new NotFoundError();
 
-      const session = await service.getSession(tokenData.sessionID);
+      const session = await sessionService.get(tokenData.sessionID);
       if (!session) throw new NotFoundError();
 
       const account = await accountService.getDetails(session.credential.accountID);
@@ -170,14 +167,14 @@ export const AuthController = new Elysia({ prefix: '/auth' })
 
   .delete(
     '/session',
-    async ({ service, cookie: { accessToken }, AccessToken }) => {
+    async ({ sessionService, cookie: { accessToken } }) => {
       const tokenString = accessToken.value;
       accessToken.remove();
 
-      const tokenData = await AccessToken.verify(tokenString);
+      const tokenData = await sessionService.accessToken.verify(tokenString);
       if (!tokenData) return;
 
-      await service.deleteSession(tokenData.sessionID);
+      await sessionService.delete(tokenData.sessionID);
     },
     {
       cookie: t.Cookie({

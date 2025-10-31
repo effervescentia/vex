@@ -4,7 +4,7 @@ export type AuthSession = Static<typeof AuthSessionDTO>;
 
 export const AuthSessionDTO = t.Object({
   id: t.Number(),
-  credentialID: t.String({ format: 'uuid' }),
+  credentialID: t.String(),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });
