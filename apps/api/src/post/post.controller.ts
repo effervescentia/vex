@@ -1,7 +1,7 @@
 import { AuthPlugin } from '@api/auth/auth.plugin';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
-import Elysia, { t } from 'elysia';
+import Elysia, { NotFoundError, t } from 'elysia';
 import { CreateTextPostRequest } from './data/create-text-post.req';
 import { PatchTextPostRequest } from './data/patch-text-post.req';
 import { PostWithContentDTO } from './data/post-with-content.dto';
@@ -51,19 +51,17 @@ export const PostController = new Elysia({ prefix: '/post' })
   )
 
   .get(
-    '/:postID',
-    async ({ service, params, status }) => {
+    '/details/:postID',
+    async ({ service, params, principal }) => {
       const post = await service.getWithContent(params.postID);
-      if (!post) return status(404, `No Post exists with ID '${params.postID}'`);
+      if (!post || post.authorID !== principal.id) throw new NotFoundError(`No Post exists with ID '${params.postID}'`);
 
       return post;
     },
     {
+      authenticated: true,
       params: PostParams,
-      response: {
-        200: PostWithContentDTO,
-        404: t.String(),
-      },
+      response: PostWithContentDTO,
     },
   )
 

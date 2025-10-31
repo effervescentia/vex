@@ -1,4 +1,4 @@
-import { createRouter, defineRoute } from 'type-route';
+import { createRouter, defineRoute, param } from 'type-route';
 
 export const { RouteProvider, useRoute, routes } = createRouter({
   home: defineRoute('/'),
@@ -9,5 +9,14 @@ export const { RouteProvider, useRoute, routes } = createRouter({
 
   login: defineRoute('/login'),
 
-  posts: defineRoute('/posts'),
+  ownPosts: defineRoute('/posts'),
+
+  newPost: defineRoute('/post/new'),
+
+  postDetails: defineRoute(
+    {
+      postID: param.path.string,
+    },
+    (p) => `/post/${p.postID}`,
+  ),
 });

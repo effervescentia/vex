@@ -2,7 +2,7 @@ import { ContentService } from '@api/content/content.service';
 import { TextContentDB } from '@api/db/db.schema';
 import { DataService } from '@api/global/data.service';
 import { insertOne } from '@bltx/db';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 import { InternalServerError } from 'elysia';
 import type { CreateTextPost } from './data/create-text-post.req';
 import type { PatchTextPost } from './data/patch-text-post.req';
@@ -21,6 +21,7 @@ export class PostService extends DataService {
     return this.db.query.PostDB.findMany({
       where: eq(PostDB.authorID, authorID),
       with: { text: { columns: { postID: false } } },
+      orderBy: desc(PostDB.createdAt),
     });
   }
 

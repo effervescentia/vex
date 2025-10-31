@@ -1,43 +1,14 @@
-import { accountAtom } from '@web/data/account.atom';
-import { useSetup } from '@web/hooks/use-setup.hook';
 import { Fingerprint } from '@web/pages/fingerprint/fingerprint.page';
 import { Home } from '@web/pages/home/home.page';
 import { Login } from '@web/pages/login/login.page';
-import { Posts } from '@web/pages/posts/posts.page';
+import { NewPost } from '@web/pages/post/new-post/new-post.page';
+import { OwnPosts } from '@web/pages/post/own-posts/own-posts.page';
+import { PostDetails } from '@web/pages/post/post-details/post-details.page';
 import { Signup } from '@web/pages/signup/signup.page';
 import { themeClass } from '@web/styles/theme.css';
-import { useAtomValue } from 'jotai';
-import type { JSX } from 'react';
 import { match } from 'ts-pattern';
-import { routes, useRoute } from './app.router';
-
-const secure =
-  <A extends any[]>(factory: (...args: A) => JSX.Element) =>
-  (...args: A) => {
-    const account = useAtomValue(accountAtom);
-
-    useSetup(() => {
-      if (account) return;
-
-      routes.login().replace();
-    });
-
-    return account ? factory(...args) : null;
-  };
-
-const unsecure =
-  <A extends any[]>(factory: (...args: A) => JSX.Element) =>
-  (...args: A) => {
-    const account = useAtomValue(accountAtom);
-
-    useSetup(() => {
-      if (!account) return;
-
-      routes.home().replace();
-    });
-
-    return account ? null : factory(...args);
-  };
+import { useRoute } from './app.router';
+import { secure, unsecure } from './app.util';
 
 export const App: React.FC = () => {
   const route = useRoute();
@@ -62,8 +33,18 @@ export const App: React.FC = () => {
     )
 
     .with(
-      { name: 'posts' },
-      secure(() => <Posts />),
+      { name: 'ownPosts' },
+      secure(() => <OwnPosts />),
+    )
+
+    .with(
+      { name: 'newPost' },
+      secure(() => <NewPost />),
+    )
+
+    .with(
+      { name: 'postDetails' },
+      secure(({ params }) => <PostDetails postID={params.postID} />),
     )
 
     .otherwise(() => null);

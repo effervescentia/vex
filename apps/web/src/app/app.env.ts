@@ -2,12 +2,14 @@ import z from 'zod';
 
 declare global {
   interface Window {
-    vexenv?: any;
+    vexenv?: unknown;
   }
 }
 
 const EnvironmentDTO = z.object({
   API_HOST: z.string(),
+
+  GEOLOCATION_TTL: z.coerce.number(),
 });
 
 export type Environment = z.infer<typeof EnvironmentDTO>;

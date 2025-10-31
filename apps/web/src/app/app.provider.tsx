@@ -2,6 +2,7 @@ import { DialogProvider } from '@bltx/web';
 import { client } from '@web/client';
 import { accountAtom } from '@web/data/account.atom';
 import { useSetup } from '@web/hooks/use-setup.hook';
+import { unpack } from '@web/utils/request.util';
 import { useSetAtom } from 'jotai';
 import { useState } from 'react';
 import { env } from './app.env';
@@ -15,12 +16,7 @@ export const AppProvider: React.FC<React.PropsWithChildren> = ({ children }) => 
     env.init();
 
     try {
-      const { account } = await client()
-        .auth.session.get()
-        .then((result) => {
-          if (result.error) throw result.error;
-          return result.data;
-        });
+      const { account } = await client().auth.session.get().then(unpack);
 
       setAccount({
         id: account.id,

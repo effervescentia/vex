@@ -104,12 +104,12 @@ describe('PostController', () => {
     });
   });
 
-  describe('GET /post/:postID', () => {
+  describe('GET /post/details/:postID', () => {
     const { app, db } = setupIntegrationTest(PostController);
 
-    const request = (postID: string): Promise<Serialized<PostWithContent>> =>
+    const request = (accountID: string, postID: string): Promise<Serialized<PostWithContent>> =>
       app()
-        .handle(new MockRequest(`/post/${postID}`, { method: 'get' }))
+        .handle(new MockRequest(`/post/details/${postID}`, { method: 'get', headers: { 'test-principal': accountID } }))
         .then((res) => res.json());
 
     test('get text post', async () => {
@@ -119,7 +119,7 @@ describe('PostController', () => {
         content: 'my first post',
       });
 
-      const result = await request(post.id);
+      const result = await request(account.id, post.id);
 
       expect(result).toEqual(serialize(post));
     });
