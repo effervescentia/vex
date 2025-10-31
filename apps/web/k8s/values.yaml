@@ -31,3 +31,7 @@ tls:
 
 api:
   host: 'https://api.vex.localhost:1337'
+
+geolocation:
+  # cache TTL in seconds
+  ttl: 1800

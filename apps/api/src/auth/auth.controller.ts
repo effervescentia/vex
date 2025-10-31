@@ -2,8 +2,9 @@ import { AccountService } from '@api/account/account.service';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import { RedisPlugin } from '@api/redis/redis.plugin';
-import Elysia, { Cookie, type CookieOptions, NotFoundError, t } from 'elysia';
+import Elysia, { Cookie, NotFoundError, t } from 'elysia';
 import { ACCESS_TOKEN_TTL, LOGIN_TTL, SIGNUP_TTL } from './auth.const';
+import { AUTH_COOKIE } from './auth.plugin';
 import { AuthService } from './auth.service';
 import { AuthSessionService } from './auth-session.service';
 import { AuthenticatedResponse } from './data/authenticated.res';
@@ -13,13 +14,6 @@ import { NegotiateSignupRequest } from './data/negotiate-signup.req';
 import { SignupChallengeResponse } from './data/signup-challenge.res';
 import { VerifyLoginRequest } from './data/verify-login.req';
 import { VerifySignupRequest } from './data/verify-signup.req';
-
-const AUTH_COOKIE: CookieOptions = {
-  domain: 'api.vex.localhost',
-  sameSite: true,
-  httpOnly: true,
-  secure: true,
-};
 
 export const AuthController = new Elysia({ prefix: '/auth' })
   .use(DatabasePlugin)

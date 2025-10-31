@@ -6,6 +6,7 @@ import { accountAtom } from '@web/data/account.atom';
 import { preferredCredentialAtom } from '@web/data/preferred-credential.atom';
 import { hasPublicKeySignalAPI } from '@web/utils/capability.util';
 import { Invariant } from '@web/utils/error.util';
+import { unpack } from '@web/utils/request.util';
 import { useSetAtom } from 'jotai';
 
 export const Signup: React.FC = () => {
@@ -13,12 +14,7 @@ export const Signup: React.FC = () => {
   const setPreferredCredential = useSetAtom(preferredCredentialAtom);
 
   const signup = async () => {
-    const { challenge } = await client()
-      .auth.signup.negotiate.post({})
-      .then((result) => {
-        if (result.error) throw result.error;
-        return result.data;
-      });
+    const { challenge } = await client().auth.signup.negotiate.post({}).then(unpack);
 
     const registration = await webauthn.register({
       hints: ['client-device'],
@@ -33,10 +29,7 @@ export const Signup: React.FC = () => {
 
     const result = await client()
       .auth.signup.verify.post({ registration })
-      .then((result) => {
-        if (result.error) throw result.error;
-        return result.data;
-      })
+      .then(unpack)
       .catch(async (err) => {
         if (hasPublicKeySignalAPI(PublicKeyCredential)) {
           await PublicKeyCredential.signalUnknownCredential({

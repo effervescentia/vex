@@ -5,6 +5,7 @@ import { client } from '@web/client';
 import { accountAtom } from '@web/data/account.atom';
 import { preferredCredentialAtom } from '@web/data/preferred-credential.atom';
 import { hasPublicKeySignalAPI } from '@web/utils/capability.util';
+import { unpack } from '@web/utils/request.util';
 import { useAtom, useSetAtom } from 'jotai';
 
 export const Login: React.FC = () => {
@@ -12,12 +13,7 @@ export const Login: React.FC = () => {
   const [preferredCredential, setPreferredCredential] = useAtom(preferredCredentialAtom);
 
   const login = async () => {
-    const { challenge } = await client()
-      .auth.login.negotiate.post({})
-      .then((result) => {
-        if (result.error) throw result.error;
-        return result.data;
-      });
+    const { challenge } = await client().auth.login.negotiate.post({}).then(unpack);
 
     const authentication = await webauthn.authenticate({
       hints: ['client-device'],
@@ -30,10 +26,7 @@ export const Login: React.FC = () => {
 
     const { account } = await client()
       .auth.login.verify.post({ authentication })
-      .then((result) => {
-        if (result.error) throw result.error;
-        return result.data;
-      })
+      .then(unpack)
       .catch(async (err) => {
         setPreferredCredential(null);
 
@@ -50,9 +43,10 @@ export const Login: React.FC = () => {
     const [alias] = account.aliases;
     if (!alias) return;
 
-    if (hasPublicKeySignalAPI(PublicKeyCredential)) {
+    const credentialUserID = authentication.response.userHandle;
+    if (hasPublicKeySignalAPI(PublicKeyCredential) && credentialUserID) {
       await PublicKeyCredential.signalCurrentUserDetails({
-        userId: authentication.response.userHandle!,
+        userId: credentialUserID,
         rpId: DOMAIN,
         name: alias.name,
         displayName: alias.name,

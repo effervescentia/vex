@@ -1,6 +1,6 @@
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
-import Elysia, { t } from 'elysia';
+import Elysia, { NotFoundError, t } from 'elysia';
 import { AccountService } from './account.service';
 import { AccountAliasService } from './account-alias.service';
 import { AccountDTO } from './data/account.dto';
@@ -43,18 +43,15 @@ export const AccountController = new Elysia({ prefix: '/account' })
 
   .get(
     '/:accountID',
-    async ({ service, params, status }) => {
+    async ({ service, params }) => {
       const account = await service.getDetails(params.accountID);
-      if (!account) return status(404, `No Account exists with ID '${params.accountID}'`);
+      if (!account) throw new NotFoundError(`No Account exists with ID '${params.accountID}'`);
 
       return account;
     },
     {
       params: AccountParams,
-      response: {
-        200: AccountDetailsDTO,
-        404: t.String(),
-      },
+      response: AccountDetailsDTO,
     },
   )
 

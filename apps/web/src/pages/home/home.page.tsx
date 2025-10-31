@@ -1,3 +1,4 @@
+import { AppNavigation } from '@web/app/app.navigation';
 import { routes } from '@web/app/app.router';
 import { accountAtom } from '@web/data/account.atom';
 import { useAtom } from 'jotai';
@@ -12,6 +13,7 @@ export const Home: React.FC = () => {
 
   return (
     <div>
+      <AppNavigation />
       <h2>Home</h2>
       <strong>
         {account?.aliases[0]} ({account?.id})
@@ -19,7 +21,6 @@ export const Home: React.FC = () => {
       <button type="button" onClick={logout}>
         logout
       </button>
-      <a {...routes.posts().link}>posts</a>
     </div>
   );
 };

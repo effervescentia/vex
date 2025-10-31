@@ -9,3 +9,5 @@ data:
   PORT_HEALTH: {{ .Values.health.port | quote }}
   
   VEX_API_HOST: {{ .Values.api.host }}
+
+  VEX_GEOLOCATION_TTL: {{ .Values.geolocation.ttl | quote }}
