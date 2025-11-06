@@ -1,4 +1,4 @@
-import { useConst } from '@web/hooks/use-const.hook';
+import { useConst } from '@bltx/web';
 import { fieldAtom, formAtom, useForm, useTextareaField } from 'form-atoms';
 
 export interface MemoFormValue {
