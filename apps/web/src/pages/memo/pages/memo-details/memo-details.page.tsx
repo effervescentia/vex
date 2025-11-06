@@ -2,6 +2,7 @@ import { AppNavigation } from '@web/app/app.navigation';
 import { routes } from '@web/app/app.router';
 import { client } from '@web/client';
 import { accountAtom } from '@web/data/account.atom';
+import { unpack } from '@web/utils/request.util';
 import { useAtomValue } from 'jotai';
 import { memoAtom, ownMemosAtom } from '../../data/memo.atom';
 import { useMemoNotFound } from '../../hooks/use-memo-not-found.hook';
@@ -17,7 +18,7 @@ export const MemoDetails: React.FC<MemoDetailsProps> = ({ memoID }) => {
   const editMemo = () => routes.editMemo({ memoID }).push();
 
   const deleteMemo = async () => {
-    await client().memo({ memoID }).delete();
+    await client().memo({ memoID }).delete().then(unpack);
 
     memoAtom.remove(memoID);
     ownMemosAtom.taint();
