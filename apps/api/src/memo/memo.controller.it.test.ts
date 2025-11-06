@@ -71,9 +71,15 @@ describe('MemoController', () => {
   describe('PATCH /memo/text/:memoID', () => {
     const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (memoID: string, body: PatchTextMemo): Promise<Serialized<MemoWithContent>> =>
+    const request = (accountID: string, memoID: string, body: PatchTextMemo): Promise<Serialized<MemoWithContent>> =>
       app()
-        .handle(new MockRequest(`/memo/text/${memoID}`, { method: 'patch', json: body }))
+        .handle(
+          new MockRequest(`/memo/text/${memoID}`, {
+            method: 'patch',
+            json: body,
+            headers: { 'test-principal': accountID },
+          }),
+        )
         .then((res) => res.json());
 
     test('patch text memo', async () => {
@@ -84,7 +90,7 @@ describe('MemoController', () => {
       });
       const data: PatchTextMemo = { content: 'my updated text' };
 
-      const result = await request(memo.id, data);
+      const result = await request(account.id, memo.id, data);
 
       expect(result).toEqual(
         expect.objectContaining({
