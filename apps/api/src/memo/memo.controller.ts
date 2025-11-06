@@ -51,7 +51,7 @@ export const MemoController = new Elysia({ prefix: '/memo' })
   )
 
   .get(
-    '/details/:memoID',
+    '/:memoID',
     async ({ service, params, principal }) => {
       const memo = await service.getWithContent(params.memoID);
       if (!memo || memo.authorID !== principal.id) throw new NotFoundError(`No Memo exists with ID '${params.memoID}'`);

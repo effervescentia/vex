@@ -104,12 +104,12 @@ describe('MemoController', () => {
     });
   });
 
-  describe('GET /memo/details/:memoID', () => {
+  describe('GET /memo/:memoID', () => {
     const { app, db } = setupIntegrationTest(MemoController);
 
     const request = (accountID: string, memoID: string): Promise<Serialized<MemoWithContent>> =>
       app()
-        .handle(new MockRequest(`/memo/details/${memoID}`, { method: 'get', headers: { 'test-principal': accountID } }))
+        .handle(new MockRequest(`/memo/${memoID}`, { method: 'get', headers: { 'test-principal': accountID } }))
         .then((res) => res.json());
 
     test('get text memo', async () => {

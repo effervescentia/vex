@@ -2,7 +2,7 @@ import { resource } from '@bltx/web';
 import { AppNavigation } from '@web/app/app.navigation';
 import { client } from '@web/client';
 
-const useMemo = resource((memoID) => client().memo.details({ memoID }).get());
+const useMemo = resource((memoID) => client().memo({ memoID }).get());
 
 export interface MemoDetailsProps {
   memoID: string;
