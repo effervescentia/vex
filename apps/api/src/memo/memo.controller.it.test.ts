@@ -128,7 +128,8 @@ describe('MemoController', () => {
   describe('DELETE /memo/:memoID', () => {
     const { app, db } = setupIntegrationTest(MemoController);
 
-    const request = (memoID: string) => app().handle(new MockRequest(`/memo/${memoID}`, { method: 'delete' }));
+    const request = (accountID: string, memoID: string) =>
+      app().handle(new MockRequest(`/memo/${memoID}`, { method: 'delete', headers: { 'test-principal': accountID } }));
 
     test('delete text memo', async () => {
       const account = await insertOne(db(), AccountDB, {});
@@ -137,7 +138,7 @@ describe('MemoController', () => {
         content: 'my first memo',
       });
 
-      await request(memo.id);
+      await request(account.id, memo.id);
 
       expect(await db().$count(MemoDB, eq(MemoDB.id, memo.id))).toBe(0);
       expect(await db().$count(TextContentDB, eq(TextContentDB.memoID, memo.id))).toBe(0);
