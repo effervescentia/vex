@@ -19,4 +19,11 @@ export const { RouteProvider, useRoute, routes } = createRouter({
     },
     (p) => `/memo/${p.memoID}`,
   ),
+
+  editMemo: defineRoute(
+    {
+      memoID: param.path.string,
+    },
+    (p) => `/memo/${p.memoID}/edit`,
+  ),
 });
