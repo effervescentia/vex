@@ -50,17 +50,14 @@ export class MemoService extends DataService {
     return this.unsafeGetWithContent(memoID);
   }
 
-  async delete(memoID: string) {
-    const memoWithContent = await this.getWithContent(memoID);
-    if (!memoWithContent) return;
-
-    if (memoWithContent.text) {
+  async delete(memo: MemoWithContent) {
+    if (memo.text) {
       // text content has no deletion side effect
     }
 
     await this.transaction(async (tx) => {
-      await tx.delete(MemoDB).where(eq(MemoDB.id, memoID));
-      await tx.delete(TextContentDB).where(eq(TextContentDB.memoID, memoID));
+      await tx.delete(MemoDB).where(eq(MemoDB.id, memo.id));
+      await tx.delete(TextContentDB).where(eq(TextContentDB.memoID, memo.id));
     });
   }
 }

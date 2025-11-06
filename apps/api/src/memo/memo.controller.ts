@@ -7,6 +7,12 @@ import { MemoWithContentDTO } from './data/memo-with-content.dto';
 import { PatchTextMemoRequest } from './data/patch-text-memo.req';
 import { MemoService } from './memo.service';
 
+class MemoNotFoundError extends NotFoundError {
+  constructor(memoID: string) {
+    super(`No Memo exists with ID '${memoID}'`);
+  }
+}
+
 const MemoParams = t.Object({ memoID: t.String({ format: 'uuid' }) });
 
 export const MemoController = new Elysia({ prefix: '/memo' })
@@ -54,7 +60,7 @@ export const MemoController = new Elysia({ prefix: '/memo' })
     '/:memoID',
     async ({ service, params, principal }) => {
       const memo = await service.getWithContent(params.memoID);
-      if (!memo || memo.authorID !== principal.id) throw new NotFoundError(`No Memo exists with ID '${params.memoID}'`);
+      if (!memo || memo.authorID !== principal.id) throw new MemoNotFoundError(params.memoID);
 
       return memo;
     },
@@ -67,10 +73,14 @@ export const MemoController = new Elysia({ prefix: '/memo' })
 
   .delete(
     '/:memoID',
-    async ({ service, params }) => {
-      await service.delete(params.memoID);
+    async ({ service, params, principal }) => {
+      const memo = await service.getWithContent(params.memoID);
+      if (!memo || memo.authorID !== principal.id) throw new MemoNotFoundError(params.memoID);
+
+      await service.delete(memo);
     },
     {
+      authenticated: true,
       params: MemoParams,
     },
   );
