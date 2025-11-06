@@ -1,12 +1,10 @@
-import { resources } from '@bltx/web';
 import { AppNavigation } from '@web/app/app.navigation';
 import { routes } from '@web/app/app.router';
-import { client } from '@web/client';
-
-const useMemos = resources(() => client().memo.get());
+import { useAtomValue } from 'jotai';
+import { ownMemosAtom } from '../../data/memo.atom';
 
 export const OwnMemos: React.FC = () => {
-  const memos = useMemos();
+  const memos = useAtomValue(ownMemosAtom);
 
   if (memos.state !== 'hasData') return null;
 
