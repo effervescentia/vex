@@ -1,6 +1,6 @@
 import { AuthCredentialDB } from '@api/auth/data/auth-credential.db';
-import { PostDB } from '@api/post/data/post.db';
-import { PostBoostDB } from '@api/post/data/post-boost.db';
+import { MemoDB } from '@api/memo/data/memo.db';
+import { MemoBoostDB } from '@api/memo/data/memo-boost.db';
 import { id, timestamps } from '@bltx/db';
 import { relations } from 'drizzle-orm';
 import { pgTable, text } from 'drizzle-orm/pg-core';
@@ -15,6 +15,6 @@ export const AccountDB = pgTable('account', {
 export const AccountRelations = relations(AccountDB, ({ many }) => ({
   credentials: many(AuthCredentialDB),
   aliases: many(AccountAliasDB),
-  posts: many(PostDB),
-  boosts: many(PostBoostDB),
+  memos: many(MemoDB),
+  boosts: many(MemoBoostDB),
 }));

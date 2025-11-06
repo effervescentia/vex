@@ -2,7 +2,7 @@ import { AccountController } from '@api/account/account.controller';
 import { AuthController } from '@api/auth/auth.controller';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import { HealthController } from '@api/health/health.controller';
-import { PostController } from '@api/post/post.controller';
+import { MemoController } from '@api/memo/memo.controller';
 import { cors } from '@elysiajs/cors';
 import Elysia from 'elysia';
 
@@ -17,4 +17,4 @@ export const App = new Elysia()
 
   .use(AuthController)
   .use(AccountController)
-  .use(PostController);
+  .use(MemoController);

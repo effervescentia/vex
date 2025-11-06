@@ -1,5 +1,5 @@
 {
-  "id": "f7cd52eb-099a-48b8-8508-0015684dca8b",
+  "id": "2a46cbde-1d9b-437b-9456-28dae97504b7",
   "prevId": "055f40af-e37d-4370-8233-44b75a9bc7b3",
   "version": "7",
   "dialect": "postgresql",
@@ -153,12 +153,178 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.post_boost": {
-      "name": "post_boost",
+    "public.auth_credential": {
+      "name": "auth_credential",
       "schema": "",
       "columns": {
-        "post_id": {
-          "name": "post_id",
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "public_key": {
+          "name": "public_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "algorithm": {
+          "name": "algorithm",
+          "type": "auth_algorithm",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "transports": {
+          "name": "transports",
+          "type": "auth_transport[]",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "auth_credential_account_id_index": {
+          "name": "auth_credential_account_id_index",
+          "columns": [
+            {
+              "expression": "account_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "auth_credential_account_id_account_id_fk": {
+          "name": "auth_credential_account_id_account_id_fk",
+          "tableFrom": "auth_credential",
+          "tableTo": "account",
+          "columnsFrom": [
+            "account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.auth_session": {
+      "name": "auth_session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "credential_id": {
+          "name": "credential_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "auth_session_credential_id_index": {
+          "name": "auth_session_credential_id_index",
+          "columns": [
+            {
+              "expression": "credential_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "auth_session_credential_id_auth_credential_id_fk": {
+          "name": "auth_session_credential_id_auth_credential_id_fk",
+          "tableFrom": "auth_session",
+          "tableTo": "auth_credential",
+          "columnsFrom": [
+            "credential_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "auth_session_credential_id_unique": {
+          "name": "auth_session_credential_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "credential_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.memo_boost": {
+      "name": "memo_boost",
+      "schema": "",
+      "columns": {
+        "memo_id": {
+          "name": "memo_id",
           "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
@@ -178,11 +344,11 @@
         }
       },
       "indexes": {
-        "post_boost_post_id_index": {
-          "name": "post_boost_post_id_index",
+        "memo_boost_memo_id_index": {
+          "name": "memo_boost_memo_id_index",
           "columns": [
             {
-              "expression": "post_id",
+              "expression": "memo_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -193,8 +359,8 @@
           "method": "btree",
           "with": {}
         },
-        "post_boost_account_id_index": {
-          "name": "post_boost_account_id_index",
+        "memo_boost_account_id_index": {
+          "name": "memo_boost_account_id_index",
           "columns": [
             {
               "expression": "account_id",
@@ -210,12 +376,12 @@
         }
       },
       "foreignKeys": {
-        "post_boost_post_id_post_id_fk": {
-          "name": "post_boost_post_id_post_id_fk",
-          "tableFrom": "post_boost",
-          "tableTo": "post",
+        "memo_boost_memo_id_memo_id_fk": {
+          "name": "memo_boost_memo_id_memo_id_fk",
+          "tableFrom": "memo_boost",
+          "tableTo": "memo",
           "columnsFrom": [
-            "post_id"
+            "memo_id"
           ],
           "columnsTo": [
             "id"
@@ -223,9 +389,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "post_boost_account_id_account_id_fk": {
-          "name": "post_boost_account_id_account_id_fk",
-          "tableFrom": "post_boost",
+        "memo_boost_account_id_account_id_fk": {
+          "name": "memo_boost_account_id_account_id_fk",
+          "tableFrom": "memo_boost",
           "tableTo": "account",
           "columnsFrom": [
             "account_id"
@@ -238,10 +404,10 @@
         }
       },
       "compositePrimaryKeys": {
-        "post_boost_post_id_account_id_pk": {
-          "name": "post_boost_post_id_account_id_pk",
+        "memo_boost_memo_id_account_id_pk": {
+          "name": "memo_boost_memo_id_account_id_pk",
           "columns": [
-            "post_id",
+            "memo_id",
             "account_id"
           ]
         }
@@ -251,8 +417,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.post": {
-      "name": "post",
+    "public.memo": {
+      "name": "memo",
       "schema": "",
       "columns": {
         "id": {
@@ -269,7 +435,7 @@
         },
         "visibility": {
           "name": "visibility",
-          "type": "post_visibility",
+          "type": "memo_visibility",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -303,8 +469,8 @@
         }
       },
       "indexes": {
-        "post_author_id_index": {
-          "name": "post_author_id_index",
+        "memo_author_id_index": {
+          "name": "memo_author_id_index",
           "columns": [
             {
               "expression": "author_id",
@@ -320,9 +486,9 @@
         }
       },
       "foreignKeys": {
-        "post_author_id_account_id_fk": {
-          "name": "post_author_id_account_id_fk",
-          "tableFrom": "post",
+        "memo_author_id_account_id_fk": {
+          "name": "memo_author_id_account_id_fk",
+          "tableFrom": "memo",
           "tableTo": "account",
           "columnsFrom": [
             "author_id"
@@ -344,8 +510,8 @@
       "name": "text_content",
       "schema": "",
       "columns": {
-        "post_id": {
-          "name": "post_id",
+        "memo_id": {
+          "name": "memo_id",
           "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true
@@ -372,11 +538,11 @@
         }
       },
       "indexes": {
-        "text_content_post_id_index": {
-          "name": "text_content_post_id_index",
+        "text_content_memo_id_index": {
+          "name": "text_content_memo_id_index",
           "columns": [
             {
-              "expression": "post_id",
+              "expression": "memo_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -389,12 +555,12 @@
         }
       },
       "foreignKeys": {
-        "text_content_post_id_post_id_fk": {
-          "name": "text_content_post_id_post_id_fk",
+        "text_content_memo_id_memo_id_fk": {
+          "name": "text_content_memo_id_memo_id_fk",
           "tableFrom": "text_content",
-          "tableTo": "post",
+          "tableTo": "memo",
           "columnsFrom": [
-            "post_id"
+            "memo_id"
           ],
           "columnsTo": [
             "id"
@@ -411,8 +577,29 @@
     }
   },
   "enums": {
-    "public.post_visibility": {
-      "name": "post_visibility",
+    "public.auth_algorithm": {
+      "name": "auth_algorithm",
+      "schema": "public",
+      "values": [
+        "RS256",
+        "EdDSA",
+        "ES256"
+      ]
+    },
+    "public.auth_transport": {
+      "name": "auth_transport",
+      "schema": "public",
+      "values": [
+        "ble",
+        "hybrid",
+        "internal",
+        "nfc",
+        "usb",
+        "smart-card"
+      ]
+    },
+    "public.memo_visibility": {
+      "name": "memo_visibility",
       "schema": "public",
       "values": [
         "public",

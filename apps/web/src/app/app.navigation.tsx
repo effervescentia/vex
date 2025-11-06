@@ -4,10 +4,10 @@ export const AppNavigation: React.FC = () => (
   <nav>
     <ul>
       <li>
-        <a {...routes.ownPosts().link}>posts</a>
+        <a {...routes.ownMemos().link}>memos</a>
       </li>
       <li>
-        <a {...routes.newPost().link}>new post</a>
+        <a {...routes.newMemo().link}>new memo</a>
       </li>
     </ul>
   </nav>
