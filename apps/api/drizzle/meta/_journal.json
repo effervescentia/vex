@@ -12,22 +12,8 @@
     {
       "idx": 1,
       "version": "7",
-      "when": 1761722443145,
-      "tag": "0001_loving_timeslip",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1761728310761,
-      "tag": "0002_wakeful_hammerhead",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1762405405410,
-      "tag": "0003_previous_grim_reaper",
+      "when": 1762405839837,
+      "tag": "0001_greedy_romulus",
       "breakpoints": true
     }
   ]
