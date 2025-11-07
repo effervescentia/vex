@@ -2,6 +2,8 @@
 FROM oven/bun:1.3-alpine AS base
 WORKDIR /home/bun/app
 
+RUN apk add entr=5.5-r0 --no-cache
+
 COPY package.json bun.lock ./
 COPY --parents */*/package.json ./
 

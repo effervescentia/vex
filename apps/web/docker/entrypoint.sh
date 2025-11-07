@@ -22,4 +22,8 @@ do
   echo "window.vexenv.${env_var#VEX_} = '$env_val';" >> "$env_file"
 done
 
+if [ "$NODE_ENV" = "development" ]; then
+  ls ../../package.json ../*/package.json | entr -rnp bun install &
+fi
+
 eval "exec $cmd"
