@@ -1,3 +1,4 @@
+import { Feed } from '@web/pages/feed/feed.page';
 import { Fingerprint } from '@web/pages/fingerprint/fingerprint.page';
 import { Home } from '@web/pages/home/home.page';
 import { Login } from '@web/pages/login/login.page';
@@ -51,6 +52,11 @@ export const App: React.FC = () => {
     .with(
       { name: 'editMemo' },
       secure(({ params }) => <EditMemo memoID={params.memoID} />),
+    )
+
+    .with(
+      { name: 'feed' },
+      secure(() => <Feed />),
     )
 
     .otherwise(() => null);

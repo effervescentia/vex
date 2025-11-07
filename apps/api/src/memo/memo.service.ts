@@ -1,13 +1,18 @@
 import { ContentService } from '@api/content/content.service';
 import { TextContentDB } from '@api/db/db.schema';
 import { DataService } from '@api/global/data.service';
-import { insertOne } from '@bltx/db';
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { type AnyColumn, insertOne } from '@bltx/db';
+import { and, desc, eq, getTableColumns, isNull, ne, sql } from 'drizzle-orm';
 import { InternalServerError } from 'elysia';
 import type { CreateTextMemo } from './data/create-text-memo.req';
 import { MemoDB } from './data/memo.db';
 import type { MemoWithContent } from './data/memo-with-content.dto';
 import type { PatchTextMemo } from './data/patch-text-memo.req';
+
+const DISTANCE_SCALE = 1000;
+
+const llToEarth = (value: AnyColumn | [number, number]) =>
+  Array.isArray(value) ? sql`ll_to_earth(${value[1]}, ${value[0]})` : sql`ll_to_earth(${value} -> 2, ${value} -> 1)`;
 
 export class MemoService extends DataService {
   private async unsafeGetWithContent(memoID: string) {
@@ -23,6 +28,23 @@ export class MemoService extends DataService {
       with: { text: { columns: { memoID: false } } },
       orderBy: desc(MemoDB.createdAt),
     });
+  }
+
+  async findNearby(accountID: string, geolocation: [number, number], radius: number): Promise<MemoWithContent[]> {
+    const distance = sql<number>`earth_distance(${llToEarth(MemoDB.geolocation)}, ${llToEarth(geolocation)}) / ${DISTANCE_SCALE}`;
+
+    const isNearby = sql<boolean>`earth_box(${llToEarth(geolocation)}, ${radius * DISTANCE_SCALE}) @> ${llToEarth(MemoDB.geolocation)}`;
+
+    return this.db
+      .select({
+        ...getTableColumns(MemoDB),
+        text: TextContentDB,
+        distance,
+      })
+      .from(MemoDB)
+      .where(and(ne(MemoDB.authorID, accountID), isNearby))
+      .leftJoin(TextContentDB, eq(TextContentDB.memoID, MemoDB.id))
+      .orderBy(desc(MemoDB.createdAt));
   }
 
   async getWithContent(memoID: string): Promise<MemoWithContent | undefined> {

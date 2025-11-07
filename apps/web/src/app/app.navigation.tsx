@@ -4,6 +4,9 @@ export const AppNavigation: React.FC = () => (
   <nav>
     <ul>
       <li>
+        <a {...routes.feed().link}>feed</a>
+      </li>
+      <li>
         <a {...routes.ownMemos().link}>memos</a>
       </li>
       <li>
