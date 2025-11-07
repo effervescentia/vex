@@ -2,6 +2,7 @@ import { AuthPlugin } from '@api/auth/auth.plugin';
 import { DatabasePlugin } from '@api/db/db.plugin';
 import { BadRequestError } from '@api/global/bad-request.error';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
+import { ForbiddenError } from '@api/global/forbidden.error';
 import Elysia, { NotFoundError, t } from 'elysia';
 import { CreateTextMemoRequest } from './data/create-text-memo.req';
 import { MemoFeedRequest } from './data/memo-feed.req';
@@ -97,6 +98,36 @@ export const MemoController = new Elysia({ prefix: '/memo' })
       if (!memo || memo.authorID !== principal.id) throw new MemoNotFoundError(params.memoID);
 
       await service.delete(memo);
+    },
+    {
+      authenticated: true,
+      params: MemoParams,
+    },
+  )
+
+  .put(
+    '/:memoID/boost',
+    async ({ service, params, principal }) => {
+      const memo = await service.getWithContent(params.memoID);
+      if (!memo) throw new MemoNotFoundError(params.memoID);
+      if (memo.authorID === principal.id) throw new ForbiddenError('Accounts cannot boost their own memos');
+
+      await service.boost(memo.id, principal.id);
+    },
+    {
+      authenticated: true,
+      params: MemoParams,
+    },
+  )
+
+  .delete(
+    '/:memoID/boost',
+    async ({ service, params, principal }) => {
+      const memo = await service.getWithContent(params.memoID);
+      if (!memo) throw new MemoNotFoundError(params.memoID);
+      if (memo.authorID === principal.id) throw new ForbiddenError('Accounts cannot boost their own memos');
+
+      await service.removeBoost(memo.id, principal.id);
     },
     {
       authenticated: true,

@@ -1,11 +1,12 @@
 import { ContentService } from '@api/content/content.service';
-import { TextContentDB } from '@api/db/db.schema';
+import { MemoBoostDB, TextContentDB } from '@api/db/db.schema';
 import { DataService } from '@api/global/data.service';
 import { type AnyColumn, insertOne } from '@bltx/db';
 import { and, desc, eq, getTableColumns, isNull, ne, sql } from 'drizzle-orm';
 import { InternalServerError } from 'elysia';
 import type { CreateTextMemo } from './data/create-text-memo.req';
 import { MemoDB } from './data/memo.db';
+import type { Memo } from './data/memo.dto';
 import type { MemoWithContent } from './data/memo-with-content.dto';
 import type { PatchTextMemo } from './data/patch-text-memo.req';
 
@@ -42,9 +43,15 @@ export class MemoService extends DataService {
         distance,
       })
       .from(MemoDB)
-      .where(and(ne(MemoDB.authorID, accountID), isNearby))
+      .where(and(ne(MemoDB.authorID, accountID), isNull(MemoDB.deletedAt), isNearby))
       .leftJoin(TextContentDB, eq(TextContentDB.memoID, MemoDB.id))
       .orderBy(desc(MemoDB.createdAt));
+  }
+
+  async get(memoID: string): Promise<Memo | undefined> {
+    return this.db.query.MemoDB.findFirst({
+      where: and(eq(MemoDB.id, memoID), isNull(MemoDB.deletedAt)),
+    });
   }
 
   async getWithContent(memoID: string): Promise<MemoWithContent | undefined> {
@@ -81,5 +88,13 @@ export class MemoService extends DataService {
       await tx.delete(MemoDB).where(eq(MemoDB.id, memo.id));
       await tx.delete(TextContentDB).where(eq(TextContentDB.memoID, memo.id));
     });
+  }
+
+  async boost(memoID: string, accountID: string) {
+    await this.db.insert(MemoBoostDB).values({ memoID, accountID }).onConflictDoNothing();
+  }
+
+  async removeBoost(memoID: string, accountID: string) {
+    await this.db.delete(MemoBoostDB).where(and(eq(MemoBoostDB.memoID, memoID), eq(MemoBoostDB.accountID, accountID)));
   }
 }

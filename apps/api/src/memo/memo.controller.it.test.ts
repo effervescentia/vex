@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { AccountDB, MemoDB, TextContentDB } from '@api/db/db.schema';
+import { AccountDB, MemoBoostDB, MemoDB, TextContentDB } from '@api/db/db.schema';
 import type { MemoWithContent } from '@api/lib';
 import { insertOne } from '@bltx/db';
 import { MockRequest, type Serialized, serialize } from '@bltx/test';
@@ -177,6 +177,52 @@ describe('MemoController', () => {
 
       expect(await db().$count(MemoDB, eq(MemoDB.id, memo.id))).toBe(0);
       expect(await db().$count(TextContentDB, eq(TextContentDB.memoID, memo.id))).toBe(0);
+    });
+  });
+
+  describe('PUT /memo/:memoID/boost', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
+
+    const request = (accountID: string, memoID: string) =>
+      app().handle(
+        new MockRequest(`/memo/${memoID}/boost`, { method: 'put', headers: { 'test-principal': accountID } }),
+      );
+
+    test('boost a memo', async () => {
+      const authorAccount = await insertOne(db(), AccountDB, {});
+      const readerAccount = await insertOne(db(), AccountDB, {});
+      const memo = await new MemoService(db()).createText(authorAccount.id, {
+        geolocation: [0, 0],
+        content: 'my first memo',
+      });
+
+      await request(readerAccount.id, memo.id);
+
+      expect(await db().$count(MemoBoostDB, eq(MemoBoostDB.memoID, memo.id))).toBe(1);
+    });
+  });
+
+  describe('DELETE /memo/:memoID/boost', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
+
+    const request = (accountID: string, memoID: string) =>
+      app().handle(
+        new MockRequest(`/memo/${memoID}/boost`, { method: 'delete', headers: { 'test-principal': accountID } }),
+      );
+
+    test('remove boost from a memo', async () => {
+      const authorAccount = await insertOne(db(), AccountDB, {});
+      const readerAccount = await insertOne(db(), AccountDB, {});
+      const memoService = new MemoService(db());
+      const memo = await memoService.createText(authorAccount.id, {
+        geolocation: [0, 0],
+        content: 'my first memo',
+      });
+      await memoService.boost(memo.id, readerAccount.id);
+
+      await request(readerAccount.id, memo.id);
+
+      expect(await db().$count(MemoBoostDB, eq(MemoBoostDB.memoID, memo.id))).toBe(0);
     });
   });
 });
