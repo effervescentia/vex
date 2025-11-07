@@ -34,7 +34,7 @@ describe('MemoController', () => {
     });
   });
 
-  describe('GET /memo/feed', () => {
+  describe('POST /memo/feed', () => {
     const { app, db } = setupIntegrationTest(MemoController);
 
     const request = (accountID: string, body: MemoFeed): Promise<Serialized<MemoWithContent[]>> =>
