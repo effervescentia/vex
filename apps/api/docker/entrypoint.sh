@@ -9,4 +9,8 @@ fi
 
 cmd="$ENTRYPOINT_CMD"
 
+if [ "$NODE_ENV" = "development" ]; then
+  ls ../../package.json ../*/package.json | entr -rnp bun install &
+fi
+
 eval "exec $cmd"

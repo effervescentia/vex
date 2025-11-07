@@ -19,6 +19,9 @@ build:
           - src: 'apps/api/**/*.ts'
             strip: apps/api
             dest: '.'
+          - src: 'apps/api/package.json'
+            strip: apps/api
+            dest: '.'
     - image: web
       docker:
         dockerfile: docker/Dockerfile.prod
@@ -34,6 +37,9 @@ build:
           - src: 'apps/api/**/*.ts'
             strip: apps/api
             dest: ../api
+          - src: 'apps/{api,web}/package.json'
+            strip: apps
+            dest: '..'
     - image: db
       docker:
         dockerfile: docker/Dockerfile.db
