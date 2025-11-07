@@ -4,6 +4,7 @@ import { BadRequestError } from '@api/global/bad-request.error';
 import { EnvironmentPlugin } from '@api/global/environment.plugin';
 import Elysia, { NotFoundError, t } from 'elysia';
 import { CreateTextMemoRequest } from './data/create-text-memo.req';
+import { MemoFeedRequest } from './data/memo-feed.req';
 import { MemoWithContentDTO } from './data/memo-with-content.dto';
 import { PatchTextMemoRequest } from './data/patch-text-memo.req';
 import { MemoService } from './memo.service';
@@ -29,6 +30,18 @@ export const MemoController = new Elysia({ prefix: '/memo' })
     },
     {
       authenticated: true,
+      response: t.Array(MemoWithContentDTO),
+    },
+  )
+
+  .post(
+    '/feed',
+    async ({ service, body, principal }) => {
+      return service.findNearby(principal.id, body.geolocation, body.distance);
+    },
+    {
+      authenticated: true,
+      body: MemoFeedRequest,
       response: t.Array(MemoWithContentDTO),
     },
   )

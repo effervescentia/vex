@@ -9,7 +9,7 @@ export const { RouteProvider, useRoute, routes } = createRouter({
 
   login: defineRoute('/login'),
 
-  ownMemos: defineRoute('/memos'),
+  ownMemos: defineRoute('/memo'),
 
   newMemo: defineRoute('/memo/new'),
 
@@ -26,4 +26,6 @@ export const { RouteProvider, useRoute, routes } = createRouter({
     },
     (p) => `/memo/${p.memoID}/edit`,
   ),
+
+  feed: defineRoute('/feed'),
 });

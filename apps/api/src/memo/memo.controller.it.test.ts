@@ -6,6 +6,7 @@ import { MockRequest, type Serialized, serialize } from '@bltx/test';
 import { setupIntegrationTest } from '@test/setup.util';
 import { eq } from 'drizzle-orm';
 import type { CreateTextMemo } from './data/create-text-memo.req';
+import type { MemoFeed } from './data/memo-feed.req';
 import { MemoVisibility } from './data/memo-visibility.enum';
 import type { PatchTextMemo } from './data/patch-text-memo.req';
 import { MemoController } from './memo.controller';
@@ -28,6 +29,34 @@ describe('MemoController', () => {
       });
 
       const result = await request(account.id);
+
+      expect(result).toEqual(serialize([memo]));
+    });
+  });
+
+  describe('POST /memo/feed', () => {
+    const { app, db } = setupIntegrationTest(MemoController);
+
+    const request = (accountID: string, body: MemoFeed): Promise<Serialized<MemoWithContent[]>> =>
+      app()
+        .handle(
+          new MockRequest('/memo/feed', {
+            method: 'post',
+            json: body,
+            headers: { 'test-principal': accountID },
+          }),
+        )
+        .then((res) => res.json());
+
+    test('find own memos', async () => {
+      const authorAccount = await insertOne(db(), AccountDB, {});
+      const readerAccount = await insertOne(db(), AccountDB, {});
+      const memo = await new MemoService(db()).createText(authorAccount.id, {
+        geolocation: [-79.38292, 43.65366],
+        content: 'my first memo',
+      });
+
+      const result = await request(readerAccount.id, { geolocation: [-79.38295, 43.65362], distance: 10 });
 
       expect(result).toEqual(serialize([memo]));
     });
