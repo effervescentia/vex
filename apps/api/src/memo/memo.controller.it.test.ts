@@ -48,7 +48,7 @@ describe('MemoController', () => {
         )
         .then((res) => res.json());
 
-    test('find own memos', async () => {
+    test('get a feed of nearby memos', async () => {
       const authorAccount = await insertOne(db(), AccountDB, {});
       const readerAccount = await insertOne(db(), AccountDB, {});
       const memo = await new MemoService(db()).createText(authorAccount.id, {
@@ -58,7 +58,7 @@ describe('MemoController', () => {
 
       const result = await request(readerAccount.id, { geolocation: [-79.38295, 43.65362], distance: 10 });
 
-      expect(result).toEqual(serialize([memo]));
+      expect(result).toEqual(serialize([{ ...memo, boosted: false }]));
     });
   });
 
