@@ -34,8 +34,9 @@ export class MemoService extends DataService {
 
   async findNearby(accountID: string, geolocation: [number, number], radius: number): Promise<MemoInFeed[]> {
     const distance = sql<number>`earth_distance(${llToEarth(MemoDB.geolocation)}, ${llToEarth(geolocation)}) / ${DISTANCE_SCALE}`;
-
     const isNearby = sql<boolean>`earth_box(${llToEarth(geolocation)}, ${radius * DISTANCE_SCALE}) @> ${llToEarth(MemoDB.geolocation)}`;
+
+    const boosts = this.db.$count(MemoBoostDB, eq(MemoBoostDB.memoID, MemoDB.id)).as('boosts');
 
     return this.db
       .select({
@@ -45,12 +46,13 @@ export class MemoService extends DataService {
           MemoBoostDB,
           and(eq(MemoBoostDB.memoID, MemoDB.id), eq(MemoBoostDB.accountID, accountID)),
         )} = 1`,
+        boosts,
         distance,
       })
       .from(MemoDB)
       .where(and(ne(MemoDB.authorID, accountID), isNull(MemoDB.deletedAt), isNearby))
       .leftJoin(TextContentDB, eq(TextContentDB.memoID, MemoDB.id))
-      .orderBy(desc(MemoDB.createdAt));
+      .orderBy(desc(boosts), desc(MemoDB.createdAt));
   }
 
   async get(memoID: string): Promise<Memo | undefined> {
