@@ -3,7 +3,7 @@ import { AppNavigation } from '@web/app/app.navigation';
 import { routes } from '@web/app/app.router';
 import { client } from '@web/client';
 import { getGeolocation } from '@web/utils/geolocation.util';
-import { useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 
 export const feedAtom = staticResourceAtom(async () => {
   const geolocation = await getGeolocation();
@@ -15,7 +15,12 @@ export const feedAtom = staticResourceAtom(async () => {
 });
 
 export const Feed: React.FC = () => {
-  const memos = useAtomValue(feedAtom);
+  const [memos, refreshMemos] = useAtom(feedAtom);
+
+  const toggleBoost = (memoID: string, boosted: boolean) => async () => {
+    await (boosted ? client().memo({ memoID }).boost.delete() : client().memo({ memoID }).boost.put());
+    refreshMemos();
+  };
 
   if (memos.state !== 'hasData') return null;
 
@@ -26,6 +31,10 @@ export const Feed: React.FC = () => {
         <div key={memo.id}>
           <p>{memo.text?.content}</p>
           <a {...routes.memoDetails({ memoID: memo.id }).link}>details</a>
+          <label>
+            <input type="checkbox" checked={memo.boosted} onChange={toggleBoost(memo.id, memo.boosted)} />
+            boosted
+          </label>
         </div>
       ))}
     </div>

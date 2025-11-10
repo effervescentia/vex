@@ -7,6 +7,7 @@ import { InternalServerError } from 'elysia';
 import type { CreateTextMemo } from './data/create-text-memo.req';
 import { MemoDB } from './data/memo.db';
 import type { Memo } from './data/memo.dto';
+import type { MemoInFeed } from './data/memo-in-feed.dto';
 import type { MemoWithContent } from './data/memo-with-content.dto';
 import type { PatchTextMemo } from './data/patch-text-memo.req';
 
@@ -31,7 +32,7 @@ export class MemoService extends DataService {
     });
   }
 
-  async findNearby(accountID: string, geolocation: [number, number], radius: number): Promise<MemoWithContent[]> {
+  async findNearby(accountID: string, geolocation: [number, number], radius: number): Promise<MemoInFeed[]> {
     const distance = sql<number>`earth_distance(${llToEarth(MemoDB.geolocation)}, ${llToEarth(geolocation)}) / ${DISTANCE_SCALE}`;
 
     const isNearby = sql<boolean>`earth_box(${llToEarth(geolocation)}, ${radius * DISTANCE_SCALE}) @> ${llToEarth(MemoDB.geolocation)}`;
@@ -40,6 +41,10 @@ export class MemoService extends DataService {
       .select({
         ...getTableColumns(MemoDB),
         text: TextContentDB,
+        boosted: sql<boolean>`${this.db.$count(
+          MemoBoostDB,
+          and(eq(MemoBoostDB.memoID, MemoDB.id), eq(MemoBoostDB.accountID, accountID)),
+        )} = 1`,
         distance,
       })
       .from(MemoDB)
