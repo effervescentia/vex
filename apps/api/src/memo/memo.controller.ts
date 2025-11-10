@@ -6,6 +6,7 @@ import { ForbiddenError } from '@api/global/forbidden.error';
 import Elysia, { NotFoundError, t } from 'elysia';
 import { CreateTextMemoRequest } from './data/create-text-memo.req';
 import { MemoFeedRequest } from './data/memo-feed.req';
+import { MemoInFeedDTO } from './data/memo-in-feed.dto';
 import { MemoWithContentDTO } from './data/memo-with-content.dto';
 import { PatchTextMemoRequest } from './data/patch-text-memo.req';
 import { MemoService } from './memo.service';
@@ -43,7 +44,7 @@ export const MemoController = new Elysia({ prefix: '/memo' })
     {
       authenticated: true,
       body: MemoFeedRequest,
-      response: t.Array(MemoWithContentDTO),
+      response: t.Array(MemoInFeedDTO),
     },
   )
 
